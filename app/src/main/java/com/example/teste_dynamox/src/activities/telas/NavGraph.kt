@@ -6,10 +6,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import kotlin.reflect.typeOf
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
-
     NavHost(
         navController = navController, startDestination = TelasRoute.TelaDeLogin.route
     ) {
@@ -17,18 +17,25 @@ fun SetupNavGraph(navController: NavHostController) {
             TelaDeLogin(navController = navController)
         }
         composable(
-            route = "tela_de_questoes/{name}",
-            arguments = listOf(navArgument(name = "name") {
-                type = NavType.StringType
-            }
+            route = "tela_de_questoes/{statement}",
+            arguments = listOf(
+                navArgument(name = "statement") {
+                    type = NavType.StringType
+                },
+//                navArgument(name = "options"){
+//                    type = NavType.StringArrayType
+//                }
             )
-        ) {backStackEntry ->
+        ) { backStackEntry ->
             // Obtenha os argumentos passados pela navegação usando rememberArgs()
-//            val question = backStackEntry.arguments?.getString("question")
-//            val options = backStackEntry.arguments?.getStringArrayList("options")
-//            println("as questões são: $question e as opções são:  $options")
-            TelaDeQuestoes(statement = backStackEntry.arguments?.getString("name"), options = emptyList())
-            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("name")}")
+            val statement = backStackEntry.arguments?.getString("statement")
+            val options : List<String> = backStackEntry.arguments?.getStringArrayList("options")?.toList() ?: emptyList()
+            TelaDeQuestoes(
+                statement = statement,
+                options = options
+            )
+            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("statement")}")
+            println("Arquivo NavGraph :  o options é :  ${backStackEntry.arguments?.getString("options")}")
         }
     }
 }
