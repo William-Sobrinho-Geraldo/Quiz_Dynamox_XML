@@ -21,19 +21,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
+import com.example.teste_dynamox.src.api.optionss
+import com.example.teste_dynamox.src.api.statement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-var statement: String? = null
-var optionss : MutableList<String>? = mutableListOf("","1")
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
-
     var isApiRequestCompleted by remember { mutableStateOf(false) }
 
     LaunchedEffect(isApiRequestCompleted) {
@@ -43,7 +42,7 @@ fun TelaDeLogin(navController: NavController) {
         }
     }
 
-    fun fazerRequisicaoENavegar() {
+    fun fazerRequisicao() {
         // Use a Coroutine para fazer a chamada da API na thread IO
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -106,7 +105,7 @@ fun TelaDeLogin(navController: NavController) {
 
             Button(
                 onClick = {
-                    fazerRequisicaoENavegar()
+                    fazerRequisicao()
                 },
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier

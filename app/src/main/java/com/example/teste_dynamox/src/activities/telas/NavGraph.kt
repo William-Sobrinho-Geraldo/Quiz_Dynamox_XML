@@ -21,21 +21,16 @@ fun SetupNavGraph(navController: NavHostController) {
             arguments = listOf(
                 navArgument(name = "statement") {
                     type = NavType.StringType
-                },
-//                navArgument(name = "options"){
-//                    type = NavType.StringArrayType
-//                }
+                }
             )
         ) { backStackEntry ->
             // Obtenha os argumentos passados pela navegação usando rememberArgs()
-            val statement = backStackEntry.arguments?.getString("statement")
-            val options : List<String> = backStackEntry.arguments?.getStringArrayList("options")?.toList() ?: emptyList()
+//            val statement = backStackEntry.arguments?.getString("statement")
             TelaDeQuestoes(
-                statement = statement,
-                options = options
+//                statement = statement,
+                navController = navController
             )
-            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("statement")}")
-            println("Arquivo NavGraph :  o options é :  ${backStackEntry.arguments?.getString("options")}")
+//            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("statement")}")
         }
     }
 }

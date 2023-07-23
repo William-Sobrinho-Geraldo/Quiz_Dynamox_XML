@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.src.activities.telas.SetupNavGraph
 import com.example.teste_dynamox.src.activities.telas.TelaDeLogin
-import com.example.teste_dynamox.src.activities.telas.statement
+import com.example.teste_dynamox.src.api.statement
 import com.example.teste_dynamox.ui.theme.Teste_DYNAMOXTheme
 
 class MainActivity : ComponentActivity() {
