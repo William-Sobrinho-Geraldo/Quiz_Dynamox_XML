@@ -1,9 +1,13 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,6 +30,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TelaDeQuestoes(navController: NavController) {
+    val modifierCard: Modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp)
+        .clip(RoundedCornerShape(16.dp))
+        .padding(horizontal = 8.dp, )
 
     var requisicaoCompleta by remember { mutableStateOf(false) }
     LaunchedEffect(requisicaoCompleta) {
@@ -51,14 +61,34 @@ fun TelaDeQuestoes(navController: NavController) {
     }
     // Conteúdo da tela de questões aqui
     // Exibe a pergunta e as opções recebidas da API
-    Column() {
-        Text(text = "a pergunta é: $statement", modifier = Modifier.padding(16.dp))
-        val firstOption: String = optionss!!.get(0)
-        Text(text = "A) ${optionss!!.get(0)}", modifier = Modifier.padding(16.dp))
-        Text(text = "B) ${optionss!!.get(1)}", modifier = Modifier.padding(16.dp))
-        Text(text = "C) ${optionss!!.get(2)}", modifier = Modifier.padding(16.dp))
-        Text(text = "D) ${optionss!!.get(3)}", modifier = Modifier.padding(16.dp))
-        Text(text = "E) ${optionss!!.get(4)}", modifier = Modifier.padding(16.dp))
+    Column(Modifier.padding(12.dp)) {
+        Text(text = "a pergunta é: $statement", modifier = Modifier.padding(horizontal = 16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+        Card(modifier = modifierCard) {
+            Text(text = "A) ${optionss!!.get(0)}", modifier = Modifier.padding(16.dp))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Card(modifier = modifierCard) {
+            Text(text = "B) ${optionss!!.get(1)}", modifier = Modifier.padding(16.dp))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Card(modifier = modifierCard) {
+            Text(text = "C) ${optionss!!.get(2)}", modifier = Modifier.padding(16.dp))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Card(modifier = modifierCard) {
+            Text(text = "D) ${optionss!!.get(3)}", modifier = Modifier.padding(16.dp))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Card(modifier = modifierCard) {
+            Text(text = "E) ${optionss!!.get(4)}", modifier = Modifier.padding(16.dp))
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+
 
         Text(
             "Bem vindo a tela de questões",
@@ -73,5 +103,4 @@ fun TelaDeQuestoes(navController: NavController) {
             Text(text = "Refresh!", fontSize = 20.sp)
         }
     }
-
 }
