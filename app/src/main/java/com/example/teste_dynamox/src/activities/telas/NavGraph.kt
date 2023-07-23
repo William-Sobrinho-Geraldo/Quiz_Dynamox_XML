@@ -1,6 +1,7 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,7 +29,8 @@ fun SetupNavGraph(navController: NavHostController) {
 //            val statement = backStackEntry.arguments?.getString("statement")
             TelaDeQuestoes(
 //                statement = statement,
-                navController = navController
+                navController = navController,
+                context = LocalContext.current
             )
 //            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("statement")}")
         }
