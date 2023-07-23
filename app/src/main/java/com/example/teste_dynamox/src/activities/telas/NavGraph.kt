@@ -24,15 +24,8 @@ fun SetupNavGraph(navController: NavHostController) {
                     type = NavType.StringType
                 }
             )
-        ) { backStackEntry ->
-            // Obtenha os argumentos passados pela navegação usando rememberArgs()
-//            val statement = backStackEntry.arguments?.getString("statement")
-            TelaDeQuestoes(
-//                statement = statement,
-                navController = navController,
-                context = LocalContext.current
-            )
-//            println("Arquivo NavGraph :  o statement é :  ${backStackEntry.arguments?.getString("statement")}")
+        ) {
+            TelaDeQuestoes(navController = navController, context = LocalContext.current)
         }
     }
 }

@@ -21,13 +21,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
-import com.example.teste_dynamox.src.api.optionss
-import com.example.teste_dynamox.src.api.statement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
+var statement: String? = null
+var optionss: MutableList<String>? = mutableListOf("", "1")
+var id : String? = ""
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -51,8 +51,9 @@ fun TelaDeLogin(navController: NavController) {
                     val quizResponse = response.body()
                     statement = quizResponse?.statement
                     optionss = quizResponse?.options
+                    id = quizResponse?.id
 
-                    println("APÓS O GET -> O statement é : $statement    e options é : $optionss")
+                    println("TelaDeLogin APÓS O GET -> O ID é $id, statement é: $statement e optionss é : $optionss")
                     if (quizResponse != null) {
 
                         // Navegue para a próxima tela e passe a resposta da API como argumento

@@ -23,13 +23,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.ApiService
-import com.example.teste_dynamox.src.api.optionss
-import com.example.teste_dynamox.src.api.statement
+import com.example.teste_dynamox.src.api.ServerResponse
 import com.example.teste_dynamox.src.util.mostrarToast
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +61,8 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                     val quizResponse = response.body()
                     statement = quizResponse?.statement
                     optionss = quizResponse?.options
-                    quizResponse.let { println("Statement e optionss são:  ${statement}   E   $optionss") }
+                    id = quizResponse?.id
+                    quizResponse.let { println("TelaDeQuestões => O ID: $id Statement: $statement e optionss: $optionss") }
                 }
             } catch (e: Exception) {
                 println("O erro foi $e")
@@ -63,7 +70,40 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             requisicaoCompleta = true
         }
     }
-    // Conteúdo da tela de questões aqui
+
+
+    fun checkAnswer(url: String?, userAnswer: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val answerRequest = AnswerRequest(answer = userAnswer)
+            val requestBody =
+                RequestBody.create("application/json".toMediaType(), Gson().toJson(answerRequest))
+            println("requestBody é:  $requestBody")
+            val call = ApiService.quizApi.checkAnswer(url, answerRequest)
+
+            call.enqueue(object : Callback<ServerResponse> {
+                override fun onResponse(
+                    call: Call<ServerResponse>,
+                    response: Response<ServerResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val serverResponse = response.body()
+                        println("A resposta do servidor foi: $serverResponse")
+
+                        if(serverResponse == ServerResponse(result = false)){
+                            mostrarToast("RESPOSTA ERRADA", context = context)
+                        } else { mostrarToast("CERTA RESPOSTAAAA",context = context) }
+                    } else {
+                        println("deu ruim")
+                    }
+                }
+
+                override fun onFailure(call: Call<ServerResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+        }
+    }
+
     // Exibe a pergunta e as opções recebidas da API
     Column(Modifier.padding(12.dp)) {
         Text(
@@ -72,38 +112,63 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Card(modifier = modifierCard,
-            onClick = { mostrarToast("${optionss!!.get(0)}", context = context) }) {
+            onClick = {
+                checkAnswer(
+                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                    userAnswer = optionss!!.get(0)
+                )
+            }) {
             Text(text = "A) ${optionss!!.get(0)}", modifier = Modifier.padding(16.dp))
         }
         Spacer(modifier = Modifier.height(10.dp))
+
         Card(modifier = modifierCard,
-            onClick = { mostrarToast("${optionss!!.get(1)}", context = context) }) {
+            onClick = {
+                checkAnswer(
+                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                    userAnswer = optionss!!.get(1)
+                )
+            }) {
             Text(text = "B) ${optionss!!.get(1)}", modifier = Modifier.padding(16.dp))
         }
         Spacer(modifier = Modifier.height(10.dp))
 
         Card(
             modifier = modifierCard,
-            onClick = { mostrarToast("${optionss!!.get(2)}", context = context) }) {
+            onClick = {
+                checkAnswer(
+                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                    userAnswer = optionss!!.get(2)
+                )
+            }) {
             Text(text = "C) ${optionss!!.get(2)}", modifier = Modifier.padding(16.dp))
         }
         Spacer(modifier = Modifier.height(10.dp))
 
         Card(modifier = modifierCard,
-            onClick = { mostrarToast("${optionss!!.get(3)}", context = context) }) {
+            onClick = {
+                checkAnswer(
+                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                    userAnswer = optionss!!.get(3)
+                )
+            }) {
             Text(text = "D) ${optionss!!.get(3)}", modifier = Modifier.padding(16.dp))
         }
         Spacer(modifier = Modifier.height(10.dp))
 
         Card(modifier = modifierCard,
-            onClick = { mostrarToast("${optionss!!.get(4)}", context = context) }) {
+            onClick = {
+                checkAnswer(
+                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                    userAnswer = optionss!!.get(4)
+                )
+            }) {
             Text(text = "E) ${optionss!!.get(4)}", modifier = Modifier.padding(16.dp))
         }
         Spacer(modifier = Modifier.height(65.dp))
-
 
         Button(onClick = {
             atualizarPagina()
