@@ -16,7 +16,7 @@ Este projeto trata-se de um teste técnico da empresa Dynamox no qual o objetivo
 
 </br>
 
-## Requisitos exigidor pela Dynamox
+## Requisitos exigidos pela Dynamox
 
 - Ao abrir o aplicativo, o usuário insere o seu nome ou apelido e pressiona um botão
 para iniciar o quiz.
@@ -36,7 +36,7 @@ Este App foi totalmente escrito na linguagem Kotlin, através da plataforma Andr
 
 Para fazer a requisições web GET( ) e POST( ), utilizei a biblioteca [Retrofit](https://square.github.io/retrofit/) juntamente com o [GSON](https://github.com/google/gson) para converter dados para o formato JSON e vice-versa.
 
-Para a navegação de telas foi utilizada a biblioteca [Navigation Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwwvilBhCFARIsADvYi7IyQi2pShJgnUOyuCsn34jZWwEBHOTBciat7Aa13kk0AYPWos4PkwUaApW_EALw_wcB&gclsrc=aw.ds&hl=pt-br) que é indicada pelo Google. Infelizmente não tive tempo hábil para fazer implementações de testes automatizados com JUnit ou Mockito mas fiz testes manuais para reforçar a boa utilização e funcionamento do app.
+Para a navegação de telas foi utilizada a biblioteca [Navigation Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwwvilBhCFARIsADvYi7IyQi2pShJgnUOyuCsn34jZWwEBHOTBciat7Aa13kk0AYPWos4PkwUaApW_EALw_wcB&gclsrc=aw.ds&hl=pt-br) que é indicada pelo Google.
 
 
 ## Video demonstrativo
@@ -56,7 +56,7 @@ Encontrei um problema na questão de **ID 48**, é a pergunta que começa com o 
 <img src = "https://user-images.githubusercontent.com/111225477/255669766-517c41c4-0b95-4739-8f12-154f0686ab47.png" width = "650px" >
 </div>
 
-Basta remover manualmente o ponto final e refazer novamente a requisição POST( ) que o servidor reconhece a alternativa como **correta** retornando um "result : true" conforme requisição feita através do programa Insomnia logo abaixo:
+Basta remover manualmente o ponto final e refazer a requisição POST( ) que o servidor reconhece a alternativa como **correta** retornando um "result : true" conforme requisição feita através do programa Insomnia logo abaixo:
 
 <div align="center"> 
 <img src = "https://user-images.githubusercontent.com/111225477/255669769-5d9c828a-dcb0-4a14-ac89-e36351b85814.png" width = "650px" >
@@ -71,3 +71,5 @@ Sabemos qual o ID da questão problemática, sabemos qual a alternativa está in
 Fico grato por estar participando do processo seletivo para Desenvolvedor Android na empresa Dynamox, esse teste foi bastante desafiador e divertido, exigindo do candidato conhecimentos e formas de solucionar problemas aparentemente simples mas que na prática podem demandar conhecimentos específicos de certos temas.
 
 Estou empolgado com hipótese de poder trabalhar e colaborar com uma empresa de alta tecnologia e que tem VALORES como: Respeito, Ética, Empatia e Comprometimento.
+
+Nos vemos na próxima fase , um abraço.  😃
