@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -69,103 +70,106 @@ fun TelaDeLogin(navController: NavController) {
         }
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
                         Color(0xFF2C2C2C),
-                        Color(0xFF6B370D),
+                        Color(0xFF44142D),
                         Color(0xFF181818),
                     )
                 )
-            //    color = Color(0xFF232323)
+                //    color = Color(0xFF232323)
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
-        Text(
-            "Quiz Dynamox",
-            fontSize = 38.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(25.dp),
-            color = Color(0xFFffffff)
-
-        )
-        Spacer(modifier = Modifier.height(110.dp))
-
-        Text(
-            text = "Nome de usuário",
-            fontSize = 16.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 78.dp),
-            color = Color(0xFFffffff)
-        )
-        OutlinedTextField(
-           // border = ,
-            value = userName,
-            onValueChange = { userName = it },
-            placeholder = {
-                Text(
-                    "Digite seu usuário aqui !",
-                    color = Color(0xFFffffff)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text
-            ),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-//                .border(BorderStroke(5.dp,Color.Transparent))
-                .border(
-                    width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFFCC481A),
-                            Color(0xFFCC481A),
-                            Color(0xFF76110C)
-                        )
-                    )
-                )
-        )
-
-        Spacer(modifier = Modifier.height(64.dp))
-
-        Button(
-            onClick = { fazerRequisicao() },
-            enabled = userName in usuariosValidos,
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .padding(horizontal = 26.dp)
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.extraLarge)
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFF76110C),
-                            Color(0xFFCC481A),
-                            Color(0xFFFEC651),
-                        )
-                    )
-                ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent
-            )
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_login_24),
-                contentDescription = "Entrar",
-                modifier = Modifier.size(24.dp),
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(24.dp))
+        item {
             Text(
-                "Entrar",
-                color = Color.White,
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                "Quiz Dynamox",
+                fontSize = 38.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(25.dp),
+                color = Color(0xFFffffff)
+
             )
+            Spacer(modifier = Modifier.height(110.dp))
+
+            Text(
+                text = "Nome de usuário",
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 78.dp),
+                color = Color(0xFFffffff)
+            )
+
+            OutlinedTextField(
+                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                value = userName,
+                onValueChange = { userName = it },
+                placeholder = {
+                    Text(
+                        "Digite seu usuário aqui !",
+                        color = Color(0xFFffffff)
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text
+                ),
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+//                .border(BorderStroke(5.dp,Color.Transparent))
+                    .border(
+                        width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFFCC481A),
+                                Color(0xFFCC481A),
+                                Color(0xFF76110C)
+                            )
+                        )
+                    )
+            )
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Button(
+                onClick = { fazerRequisicao() },
+                enabled = userName in usuariosValidos,
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier
+                    .padding(horizontal = 26.dp)
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.extraLarge)
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF76110C),
+                                Color(0xFFCC481A),
+                                Color(0xFFFEC651),
+                            )
+                        )
+                    ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                )
+            ) {
+                Text(
+                    "Entrar",
+                    color = Color.White,
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_login_24),
+                    contentDescription = "Entrar",
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.White
+                )
+
+            }
         }
     }
 }

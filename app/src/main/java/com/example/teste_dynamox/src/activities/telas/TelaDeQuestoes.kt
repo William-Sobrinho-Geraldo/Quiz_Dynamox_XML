@@ -1,8 +1,10 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,13 +28,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.ApiService
@@ -57,7 +65,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .fillMaxWidth()
         .height(50.dp)
         .clip(RoundedCornerShape(16.dp))
-        .padding(horizontal = 8.dp)
+        .padding(horizontal = 16.dp)
 
     var respostaCerta by remember { mutableStateOf(10) }
     var respostaErrada by remember { mutableStateOf(10) }
@@ -87,7 +95,6 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             requisicaoCompleta = true
         }
     }
-
 
     fun checkAnswer(url: String?, userAnswer: String) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -125,10 +132,6 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                             if (alternativaEscolhida == 4) {
                                 respostaCerta = 4
                             }
-                            mostrarToast(
-                                "RESPOSTA CERTA, PARABÉNS",
-                                context = context
-                            )
                             println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
                             if (alternativaEscolhida == 0) {
@@ -148,10 +151,6 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                             }
                             cardEnabled = false
                             respostaCerta = 10
-                            mostrarToast(
-                                "RESPOSTA ERRADA, VÁ PARA PRÓXIMA QUESTÃO",
-                                context = context
-                            )
                         }
                     } else {
                         println("deu ruim")
@@ -166,25 +165,41 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
     }
 
     // Exibe a pergunta e as opções recebidas da API
-    Column(Modifier.padding(12.dp)) {
-        Spacer(modifier = Modifier.height(20.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF2C2C2C),
+                        Color(0xFF44142D),
+                        Color(0xFF181818),
+                    )
+                )
+            )
+    ) {
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "Questão $numeroDaPergunta de 10: $statement",
+            text = "    Questão $numeroDaPergunta de 10: $statement",
             fontSize = 24.sp,
+            color = Color(0xFFffffff),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(40.dp))
 
+        if (optionss?.size == 5) {
+            println("A lista tem 5 opções")
+        }
 
-        for (index in 0..4) {
+        for (index in 0 until 5) {
             val backgroundColor = if (index == respostaCerta) {
                 CardDefaults.cardColors(containerColor = Color.Green)
-            } else if ( index == respostaErrada ){
+            } else if (index == respostaErrada) {
                 CardDefaults.cardColors(containerColor = Color.Red)
             } else {
-                CardDefaults.cardColors(containerColor = Color.LightGray)
+                CardDefaults.cardColors(containerColor = Color.DarkGray)
             }
 
             Card(
@@ -203,6 +218,8 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             ) {
                 Text(
                     text = "${'A' + index}) ${optionss!![index]}",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -222,8 +239,21 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 }
 
             }, modifier = Modifier
+                .padding(horizontal = 26.dp)
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.extraLarge)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF76110C),
+                            Color(0xFFCC481A),
+                            Color(0xFFFEC651),
+                        )
+                    )
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent
+            )
         ) {
             Text(text = "Próxima questão", fontSize = 20.sp)
             Spacer(modifier = Modifier.width(24.dp))
@@ -235,5 +265,11 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             )
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun TelaDeQuestoesPreview() {
+    TelaDeQuestoes(navController = rememberNavController(), context = LocalContext.current)
 }
 
