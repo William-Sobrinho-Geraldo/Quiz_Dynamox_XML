@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,7 +34,7 @@ var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
@@ -71,7 +72,16 @@ fun TelaDeLogin(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFa14a50)),
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF2C2C2C),
+                        Color(0xFF6B370D),
+                        Color(0xFF181818),
+                    )
+                )
+            //    color = Color(0xFF232323)
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
@@ -88,12 +98,14 @@ fun TelaDeLogin(navController: NavController) {
 
         Text(
             text = "Nome de usuário",
+            fontSize = 16.sp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 42.dp),
+                .padding(start = 78.dp),
             color = Color(0xFFffffff)
         )
         OutlinedTextField(
+           // border = ,
             value = userName,
             onValueChange = { userName = it },
             placeholder = {
@@ -107,8 +119,9 @@ fun TelaDeLogin(navController: NavController) {
             ),
             modifier = Modifier
                 .padding(bottom = 16.dp)
+//                .border(BorderStroke(5.dp,Color.Transparent))
                 .border(
-                    width = 2.dp, shape = RoundedCornerShape(16.dp), brush = Brush.linearGradient(
+                    width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
                         colors = listOf(
                             Color(0xFFCC481A),
                             Color(0xFFCC481A),
@@ -116,7 +129,6 @@ fun TelaDeLogin(navController: NavController) {
                         )
                     )
                 )
-            //border = BorderStroke(2.dp, Color.Red)
         )
 
         Spacer(modifier = Modifier.height(64.dp))
