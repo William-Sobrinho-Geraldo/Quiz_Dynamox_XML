@@ -42,6 +42,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 var numeroDaPergunta = 1
+var contadorRespostasCertas = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,9 +53,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .clip(RoundedCornerShape(16.dp))
         .padding(horizontal = 8.dp)
 
-
     var respostaCerta by remember { mutableStateOf(10) }
-
     var alternativaEscolhida: Int? = null
     var requisicaoCompleta by remember { mutableStateOf(false) }
     LaunchedEffect(requisicaoCompleta) {
@@ -100,6 +99,8 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         println("A resposta do servidor foi: $serverResponse")
 
                         if (serverResponse == ServerResponse(result = true)) {
+                            contadorRespostasCertas++
+                            println("A quant de respostas certas atuais é:  $contadorRespostasCertas")
                             if (alternativaEscolhida == 0) {
                                 respostaCerta = 0
                             }
@@ -186,7 +187,9 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 if (numeroDaPergunta < 10) {
                     atualizarPagina()
                     numeroDaPergunta++
-                } else { navController.navigate("tela_de_resultado") }
+                } else {
+                    navController.navigate("tela_de_resultado")
+                }
 
             }, modifier = Modifier
                 .fillMaxWidth()

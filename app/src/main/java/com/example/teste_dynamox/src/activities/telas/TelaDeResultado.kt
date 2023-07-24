@@ -1,6 +1,7 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,5 +19,9 @@ fun TelaDeResultado() {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(25.dp)
         )
+        Row() {
+            Text("Respostas certas: ")
+            Text("$contadorRespostasCertas")
+        }
     }
 }
