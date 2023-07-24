@@ -27,16 +27,18 @@ import kotlinx.coroutines.launch
 
 var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
-var id : String? = ""
+var id: String? = ""
+
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
     var isApiRequestCompleted by remember { mutableStateOf(false) }
+    val usuariosValidos = listOf("admin", "William", "CEO Dynamox")
 
     LaunchedEffect(isApiRequestCompleted) {
-        if(isApiRequestCompleted){
+        if (isApiRequestCompleted) {
             // Navega para a próxima tela com a variável "statement" como argumento
             navController.navigate("tela_de_questoes/$statement")
         }
@@ -52,96 +54,76 @@ fun TelaDeLogin(navController: NavController) {
                     statement = quizResponse?.statement
                     optionss = quizResponse?.options
                     id = quizResponse?.id
-
                     println("TelaDeLogin APÓS O GET -> O ID é $id, statement é: $statement e optionss é : $optionss")
-                    if (quizResponse != null) {
-
-                        // Navegue para a próxima tela e passe a resposta da API como argumento
-                    } else {
-                        println("Resposta da API está vazia.")
-                    }
                 } else {
-                    // Lida com erros da resposta da API
+                    println("A requisição falhou!")
                 }
             } catch (e: Exception) {
-                // Lida com erros da requisição
+                println("O erro encontrado foi: $e")
             }
             isApiRequestCompleted = true
         }
-
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 26.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
+        Text(
+            text = "Nome de usuário",
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Nome de usuário",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 42.dp)
-            )
-            OutlinedTextField(
-                value = userName,
-                onValueChange = { userName = it },
-                placeholder = { Text("Digite seu usuário aqui !") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text
-                ),
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-            )
+                .fillMaxWidth()
+                .padding(start = 42.dp)
+        )
+        OutlinedTextField(
+            value = userName,
+            onValueChange = { userName = it },
+            placeholder = { Text("Digite seu usuário aqui !") },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text
+            ),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
-            Spacer(modifier = Modifier.height(64.dp))
+        Spacer(modifier = Modifier.height(64.dp))
 
-            Button(
-                onClick = {
-                    fazerRequisicao()
-                },
-                contentPadding = PaddingValues(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF76110C),
-                                Color(0xFFCC481A),
-                                Color(0xFFFEC651),
-                            )
+        Button(
+            onClick = {fazerRequisicao()},
+            enabled = userName in usuariosValidos,
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF76110C),
+                            Color(0xFFCC481A),
+                            Color(0xFFFEC651),
                         )
-                    ),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                )
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_login_24),
-                    contentDescription = "Entrar",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.White
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(
-                    "Entrar",
-                    color = Color.White,
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                )
-            }
+                    )
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent
+            )
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_login_24),
+                contentDescription = "Entrar",
+                modifier = Modifier.size(24.dp),
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(24.dp))
+            Text(
+                "Entrar",
+                color = Color.White,
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            )
         }
     }
-
-
 }
 
 
