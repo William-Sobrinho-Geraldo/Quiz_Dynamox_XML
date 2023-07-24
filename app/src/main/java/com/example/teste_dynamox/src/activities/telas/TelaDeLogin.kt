@@ -35,7 +35,7 @@ var id: String? = ""
 fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
     var isApiRequestCompleted by remember { mutableStateOf(false) }
-    val usuariosValidos = listOf("admin", "William", "CEO Dynamox")
+    val usuariosValidos = listOf("admin", "William", "CEO Dynamox"," ")
 
     LaunchedEffect(isApiRequestCompleted) {
         if (isApiRequestCompleted) {

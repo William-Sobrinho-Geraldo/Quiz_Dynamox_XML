@@ -1,8 +1,6 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.content.Context
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +41,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+var numeroDaPergunta = 1
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeQuestoes(navController: NavController, context: Context) {
@@ -52,9 +52,10 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .clip(RoundedCornerShape(16.dp))
         .padding(horizontal = 8.dp)
 
+
     var respostaCerta by remember { mutableStateOf(10) }
 
-    var alternativaEscolhida : Int? = null
+    var alternativaEscolhida: Int? = null
     var requisicaoCompleta by remember { mutableStateOf(false) }
     LaunchedEffect(requisicaoCompleta) {
         if (requisicaoCompleta) {
@@ -99,16 +100,32 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         println("A resposta do servidor foi: $serverResponse")
 
                         if (serverResponse == ServerResponse(result = true)) {
-                            if (alternativaEscolhida == 0) {respostaCerta = 0 }
-                            if (alternativaEscolhida == 1) {respostaCerta = 1 }
-                            if (alternativaEscolhida == 2) {respostaCerta = 2 }
-                            if (alternativaEscolhida == 3) {respostaCerta = 3 }
-                            if (alternativaEscolhida == 4) {respostaCerta = 4 }
-                            mostrarToast("CERTO -> respostaCerta é $respostaCerta", context = context)
+                            if (alternativaEscolhida == 0) {
+                                respostaCerta = 0
+                            }
+                            if (alternativaEscolhida == 1) {
+                                respostaCerta = 1
+                            }
+                            if (alternativaEscolhida == 2) {
+                                respostaCerta = 2
+                            }
+                            if (alternativaEscolhida == 3) {
+                                respostaCerta = 3
+                            }
+                            if (alternativaEscolhida == 4) {
+                                respostaCerta = 4
+                            }
+                            mostrarToast(
+                                "CERTO -> respostaCerta é $respostaCerta",
+                                context = context
+                            )
                             println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
                             respostaCerta = 10
-                            mostrarToast("ERRADO -> respostaCerta é $respostaCerta", context = context)
+                            mostrarToast(
+                                "ERRADO -> respostaCerta é $respostaCerta",
+                                context = context
+                            )
                         }
                     } else {
                         println("deu ruim")
@@ -125,8 +142,9 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
     // Exibe a pergunta e as opções recebidas da API
     Column(Modifier.padding(12.dp)) {
         Spacer(modifier = Modifier.height(20.dp))
+
         Text(
-            text = "Pergunta: $statement",
+            text = "Pergunta $numeroDaPergunta de 10: $statement",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -152,7 +170,10 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                     alternativaEscolhida = index
                 }
             ) {
-                Text(text = "${'A' + index}) ${optionss!![index]}", modifier = Modifier.padding(16.dp))
+                Text(
+                    text = "${'A' + index}) ${optionss!![index]}",
+                    modifier = Modifier.padding(16.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -162,7 +183,11 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
 
         Button(
             onClick = {
-                atualizarPagina()
+                if (numeroDaPergunta < 10) {
+                    atualizarPagina()
+                    numeroDaPergunta++
+                } else { navController.navigate("tela_de_resultado") }
+
             }, modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.extraLarge)
