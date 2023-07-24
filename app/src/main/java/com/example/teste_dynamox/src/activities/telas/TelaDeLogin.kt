@@ -1,8 +1,11 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -35,7 +38,7 @@ var id: String? = ""
 fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
     var isApiRequestCompleted by remember { mutableStateOf(false) }
-    val usuariosValidos = listOf("admin", "William", "CEO Dynamox"," ")
+    val usuariosValidos = listOf("admin", "William", "CEO Dynamox", " ")
 
     LaunchedEffect(isApiRequestCompleted) {
         if (isApiRequestCompleted) {
@@ -68,33 +71,62 @@ fun TelaDeLogin(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 26.dp),
+            .background(color = Color(0xFFa14a50)),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
+        Text(
+            "Quiz Dynamox",
+            fontSize = 38.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(25.dp),
+            color = Color(0xFFffffff)
+
+        )
+        Spacer(modifier = Modifier.height(110.dp))
+
         Text(
             text = "Nome de usuário",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 42.dp)
+                .padding(start = 42.dp),
+            color = Color(0xFFffffff)
         )
         OutlinedTextField(
             value = userName,
             onValueChange = { userName = it },
-            placeholder = { Text("Digite seu usuário aqui !") },
+            placeholder = {
+                Text(
+                    "Digite seu usuário aqui !",
+                    color = Color(0xFFffffff)
+                )
+            },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text
             ),
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .border(
+                    width = 2.dp, shape = RoundedCornerShape(16.dp), brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFFCC481A),
+                            Color(0xFFCC481A),
+                            Color(0xFF76110C)
+                        )
+                    )
+                )
+            //border = BorderStroke(2.dp, Color.Red)
         )
 
         Spacer(modifier = Modifier.height(64.dp))
 
         Button(
-            onClick = {fazerRequisicao()},
+            onClick = { fazerRequisicao() },
             enabled = userName in usuariosValidos,
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
+                .padding(horizontal = 26.dp)
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.extraLarge)
                 .background(
@@ -127,7 +159,7 @@ fun TelaDeLogin(navController: NavController) {
 }
 
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaDeLoginPreviewConposable() {
     val navController = rememberNavController()

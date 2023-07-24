@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,10 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.ApiService
 import com.example.teste_dynamox.src.api.ServerResponse
@@ -54,7 +60,9 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .padding(horizontal = 8.dp)
 
     var respostaCerta by remember { mutableStateOf(10) }
+    var respostaErrada by remember { mutableStateOf(10) }
     var alternativaEscolhida: Int? = null
+    var cardEnabled by remember { mutableStateOf(true) }
     var requisicaoCompleta by remember { mutableStateOf(false) }
     LaunchedEffect(requisicaoCompleta) {
         if (requisicaoCompleta) {
@@ -99,6 +107,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         println("A resposta do servidor foi: $serverResponse")
 
                         if (serverResponse == ServerResponse(result = true)) {
+                            cardEnabled = false
                             contadorRespostasCertas++
                             println("A quant de respostas certas atuais é:  $contadorRespostasCertas")
                             if (alternativaEscolhida == 0) {
@@ -117,14 +126,30 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                                 respostaCerta = 4
                             }
                             mostrarToast(
-                                "CERTO -> respostaCerta é $respostaCerta",
+                                "RESPOSTA CERTA, PARABÉNS",
                                 context = context
                             )
                             println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
+                            if (alternativaEscolhida == 0) {
+                                respostaErrada = 0
+                            }
+                            if (alternativaEscolhida == 1) {
+                                respostaErrada = 1
+                            }
+                            if (alternativaEscolhida == 2) {
+                                respostaErrada = 2
+                            }
+                            if (alternativaEscolhida == 3) {
+                                respostaErrada = 3
+                            }
+                            if (alternativaEscolhida == 4) {
+                                respostaErrada = 4
+                            }
+                            cardEnabled = false
                             respostaCerta = 10
                             mostrarToast(
-                                "ERRADO -> respostaCerta é $respostaCerta",
+                                "RESPOSTA ERRADA, VÁ PARA PRÓXIMA QUESTÃO",
                                 context = context
                             )
                         }
@@ -145,7 +170,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Pergunta $numeroDaPergunta de 10: $statement",
+            text = "Questão $numeroDaPergunta de 10: $statement",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -156,19 +181,24 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         for (index in 0..4) {
             val backgroundColor = if (index == respostaCerta) {
                 CardDefaults.cardColors(containerColor = Color.Green)
+            } else if ( index == respostaErrada ){
+                CardDefaults.cardColors(containerColor = Color.Red)
             } else {
                 CardDefaults.cardColors(containerColor = Color.LightGray)
             }
 
             Card(
+                //enabled = cardEnabled,
                 colors = backgroundColor,
                 modifier = modifierCard,
                 onClick = {
-                    checkAnswer(
-                        url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                        userAnswer = optionss!![index]
-                    )
-                    alternativaEscolhida = index
+                    if (cardEnabled) {
+                        checkAnswer(
+                            url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                            userAnswer = optionss!![index]
+                        )
+                        alternativaEscolhida = index
+                    }
                 }
             ) {
                 Text(
@@ -195,7 +225,14 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.extraLarge)
         ) {
-            Text(text = "Próximo!", fontSize = 20.sp)
+            Text(text = "Próxima questão", fontSize = 20.sp)
+            Spacer(modifier = Modifier.width(24.dp))
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_keyboard_double_arrow_right_24),
+                contentDescription = "Entrar",
+                modifier = Modifier.size(24.dp),
+                tint = Color.White
+            )
         }
     }
 }

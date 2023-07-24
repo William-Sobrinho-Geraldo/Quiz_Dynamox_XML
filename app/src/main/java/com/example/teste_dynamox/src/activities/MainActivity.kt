@@ -15,7 +15,6 @@ class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             Teste_DYNAMOXTheme {
                 navController = rememberNavController()
