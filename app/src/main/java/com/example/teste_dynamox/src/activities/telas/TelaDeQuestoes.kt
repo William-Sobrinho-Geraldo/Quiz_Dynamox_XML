@@ -1,6 +1,8 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,8 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +52,9 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .clip(RoundedCornerShape(16.dp))
         .padding(horizontal = 8.dp)
 
+    var respostaCerta by remember { mutableStateOf(10) }
+
+    var alternativaEscolhida : Int? = null
     var requisicaoCompleta by remember { mutableStateOf(false) }
     LaunchedEffect(requisicaoCompleta) {
         if (requisicaoCompleta) {
@@ -89,9 +98,18 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         val serverResponse = response.body()
                         println("A resposta do servidor foi: $serverResponse")
 
-                        if(serverResponse == ServerResponse(result = false)){
-                            mostrarToast("RESPOSTA ERRADA", context = context)
-                        } else { mostrarToast("CERTA RESPOSTAAAA",context = context) }
+                        if (serverResponse == ServerResponse(result = true)) {
+                            if (alternativaEscolhida == 0) {respostaCerta = 0 }
+                            if (alternativaEscolhida == 1) {respostaCerta = 1 }
+                            if (alternativaEscolhida == 2) {respostaCerta = 2 }
+                            if (alternativaEscolhida == 3) {respostaCerta = 3 }
+                            if (alternativaEscolhida == 4) {respostaCerta = 4 }
+                            mostrarToast("CERTO -> respostaCerta é $respostaCerta", context = context)
+                            println("a Alternativa escolhida foi: $alternativaEscolhida")
+                        } else {
+                            respostaCerta = 10
+                            mostrarToast("ERRADO -> respostaCerta é $respostaCerta", context = context)
+                        }
                     } else {
                         println("deu ruim")
                     }
@@ -106,6 +124,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
 
     // Exibe a pergunta e as opções recebidas da API
     Column(Modifier.padding(12.dp)) {
+        Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Pergunta: $statement",
             fontSize = 24.sp,
@@ -114,66 +133,42 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         )
         Spacer(modifier = Modifier.height(40.dp))
 
-        Card(modifier = modifierCard,
-            onClick = {
-                checkAnswer(
-                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                    userAnswer = optionss!!.get(0)
-                )
-            }) {
-            Text(text = "A) ${optionss!!.get(0)}", modifier = Modifier.padding(16.dp))
-        }
-        Spacer(modifier = Modifier.height(10.dp))
 
-        Card(modifier = modifierCard,
-            onClick = {
-                checkAnswer(
-                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                    userAnswer = optionss!!.get(1)
-                )
-            }) {
-            Text(text = "B) ${optionss!!.get(1)}", modifier = Modifier.padding(16.dp))
-        }
-        Spacer(modifier = Modifier.height(10.dp))
+        for (index in 0..4) {
+            val backgroundColor = if (index == respostaCerta) {
+                CardDefaults.cardColors(containerColor = Color.Green)
+            } else {
+                CardDefaults.cardColors(containerColor = Color.LightGray)
+            }
 
-        Card(
-            modifier = modifierCard,
-            onClick = {
-                checkAnswer(
-                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                    userAnswer = optionss!!.get(2)
-                )
-            }) {
-            Text(text = "C) ${optionss!!.get(2)}", modifier = Modifier.padding(16.dp))
-        }
-        Spacer(modifier = Modifier.height(10.dp))
+            Card(
+                colors = backgroundColor,
+                modifier = modifierCard,
+                onClick = {
+                    checkAnswer(
+                        url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                        userAnswer = optionss!![index]
+                    )
+                    alternativaEscolhida = index
+                }
+            ) {
+                Text(text = "${'A' + index}) ${optionss!![index]}", modifier = Modifier.padding(16.dp))
+            }
 
-        Card(modifier = modifierCard,
-            onClick = {
-                checkAnswer(
-                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                    userAnswer = optionss!!.get(3)
-                )
-            }) {
-            Text(text = "D) ${optionss!!.get(3)}", modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
-        Spacer(modifier = Modifier.height(10.dp))
 
-        Card(modifier = modifierCard,
-            onClick = {
-                checkAnswer(
-                    url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                    userAnswer = optionss!!.get(4)
-                )
-            }) {
-            Text(text = "E) ${optionss!!.get(4)}", modifier = Modifier.padding(16.dp))
-        }
         Spacer(modifier = Modifier.height(65.dp))
 
-        Button(onClick = {
-            atualizarPagina()
-        }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {
+                atualizarPagina()
+            }, modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+        ) {
             Text(text = "Próximo!", fontSize = 20.sp)
         }
     }
 }
+
