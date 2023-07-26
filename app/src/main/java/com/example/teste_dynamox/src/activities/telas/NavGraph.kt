@@ -30,5 +30,8 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(route = "tela_de_resultado") {
             TelaDeResultado(navController = navController)
         }
+        composable(route = "tela_de_cadastro_de_usuario"){
+            TelaDeCadastroDeUsuario(navController = navController, context = LocalContext.current)
+        }
     }
 }
