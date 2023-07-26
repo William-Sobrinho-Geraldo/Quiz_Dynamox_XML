@@ -1,13 +1,10 @@
 package com.example.teste_dynamox.src.activities.telas
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,6 +23,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
+import com.example.teste_dynamox.src.databaseLocal.AppDatabase
+import com.example.teste_dynamox.src.databaseLocal.Users
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,6 +32,8 @@ import kotlinx.coroutines.launch
 var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
+val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -41,6 +42,23 @@ fun TelaDeLogin(navController: NavController) {
     var userName by remember { mutableStateOf("") }
     var isApiRequestCompleted by remember { mutableStateOf(false) }
     val usuariosValidos = listOf("admin", "William", "CEO Dynamox", " ")
+    println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
+
+    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+
+
+    var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
+    println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
+
+    LaunchedEffect(Unit) {
+        usuariosNoBancoDeDados.addAll(userDao.buscaTodosUsuarios())
+        println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
+        val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
+        println("usernames é:  $userNames")
+        userNamesNoBancoDeDadosLocal.addAll(userNames)
+    }
+
+
 
     LaunchedEffect(isApiRequestCompleted) {
         if (isApiRequestCompleted) {
@@ -137,7 +155,8 @@ fun TelaDeLogin(navController: NavController) {
 
             Button(
                 onClick = { fazerRequisicao() },
-                enabled = userName in usuariosValidos,
+
+                enabled = userName in userNamesNoBancoDeDadosLocal,
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
                     .padding(horizontal = 26.dp)
