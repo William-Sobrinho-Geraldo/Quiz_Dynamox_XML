@@ -38,14 +38,16 @@ Para fazer a requisições web GET( ) e POST( ), utilizei a biblioteca [Retrofit
 
 Para a navegação de telas foi utilizada a biblioteca [Navigation Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwwvilBhCFARIsADvYi7IyQi2pShJgnUOyuCsn34jZWwEBHOTBciat7Aa13kk0AYPWos4PkwUaApW_EALw_wcB&gclsrc=aw.ds&hl=pt-br) que é indicada pelo Google.
 
+Para fazer o cadastro e busca de usuários localmente foi usada a biblioteca [ROOM](https://developer.android.com/training/data-storage/room?hl=pt-br) que cria um banco de dados SQLite no aparelho do usuário permitindo a utilização de um sistema CRUD (Create, Read, Update e Delete) 
+
 
 ## Video demonstrativo
 
 A seguir temos um GIF  que demonstra de forma resumida das funcionalidades do App. Para acessar o vídeo completo com audio, basta clicar no link ao lado: 
- [Link do vídeo](https://www.youtube.com/watch?v=VPA63Getvs0)
+ [Link do vídeo](https://youtu.be/z76hwPDHbc8)
 
 <div align="center">
-<img src = "https://user-images.githubusercontent.com/111225477/255675447-49cbca34-a167-4ac2-bbd7-1efec4fc3c74.gif" width = "230px">
+<img src = "https://user-images.githubusercontent.com/111225477/256329145-55d55350-f248-459e-b895-95f565cbee20.gif" width = "230px">
 
 </div>
 </br>
