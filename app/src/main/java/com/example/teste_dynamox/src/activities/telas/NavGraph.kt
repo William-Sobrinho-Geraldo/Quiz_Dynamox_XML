@@ -15,7 +15,7 @@ fun SetupNavGraph(navController: NavHostController) {
         navController = navController, startDestination = TelasRoute.TelaDeLogin.route
     ) {
         composable(route = "tela_de_login") {
-            TelaDeLogin(navController = navController)
+            TelaDeLogin(navController = navController, context = LocalContext.current)
         }
         composable(
             route = "tela_de_questoes/{statement}",

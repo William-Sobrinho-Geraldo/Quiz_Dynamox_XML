@@ -1,5 +1,6 @@
 package com.example.teste_dynamox.src.activities.telas
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -27,8 +28,10 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
+import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 var statement: String? = null
@@ -38,7 +41,7 @@ val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = false) {
+fun TelaDeLogin(navController: NavController, context: Context) {
     var userNameDigitadoPeloUsuario by remember { mutableStateOf("") }
     val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
@@ -55,11 +58,11 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
         userNamesNoBancoDeDadosLocal.addAll(userNames)
     }
 
-    LaunchedEffect(podeNavegarParaOutraTela){
+    LaunchedEffect(podeNavegarParaOutraTela) {
         if (podeNavegarParaOutraTela) navController.navigate("tela_de_questoes/$statement")
     }
 
-    fun fazerRequisicaoENavegarParaProximaTela () {
+    fun fazerRequisicaoENavegarParaProximaTela() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = quizApi.getPergunta()
@@ -79,6 +82,7 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
             }
         }
     }
+
 
     // CONSTRUINDO A TELA DE LOGIN
     LazyColumn(
@@ -105,7 +109,6 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(25.dp),
                 color = Color(0xFFffffff)
-
             )
             Spacer(modifier = Modifier.height(110.dp))
 
@@ -119,6 +122,7 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
             )
 
             OutlinedTextField(
+                isError = true,
                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                 value = userNameDigitadoPeloUsuario,
                 onValueChange = { userNameDigitadoPeloUsuario = it },
@@ -147,8 +151,12 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
             Spacer(modifier = Modifier.height(64.dp))
 
             Button(
-                onClick = { fazerRequisicaoENavegarParaProximaTela() },
-                enabled = userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal,
+                onClick = {
+                    if (userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal) {
+                        fazerRequisicaoENavegarParaProximaTela()
+                    } else mostrarToast("Usuário $userNameDigitadoPeloUsuario não cadastrado", context = context)
+                },
+                //enabled = userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal,
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
                     .padding(horizontal = 26.dp)
@@ -208,5 +216,5 @@ fun TelaDeLogin(navController: NavController, isApiRequestCompleted: Boolean = f
 @Composable
 fun TelaDeLoginPreviewConposable() {
     val navController = rememberNavController()
-    TelaDeLogin(navController = navController)
+    TelaDeLogin(navController = navController, context = LocalContext.current)
 }

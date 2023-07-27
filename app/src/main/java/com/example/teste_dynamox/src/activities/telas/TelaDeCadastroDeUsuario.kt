@@ -75,18 +75,12 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
     }
 
     fun cadastrarUsuario(userName: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userDao.inserirNovoUsuario(Users(userName = userName))
-        }
+        CoroutineScope(Dispatchers.IO).launch { userDao.inserirNovoUsuario(Users(userName = userName)) }
     }
 
     LaunchedEffect(isApiRequestCompleted) {
-        if (isApiRequestCompleted) {
-            // Navega para a próxima tela com a variável "statement" como argumento
-            navController.navigate("tela_de_questoes/$statement")
-        }
+        if (isApiRequestCompleted) { navController.navigate("tela_de_questoes/$statement") }
     }
-
 
     LazyColumn(
         modifier = Modifier
@@ -154,8 +148,13 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
             Spacer(modifier = Modifier.height(64.dp))
 
             Button(
-                onClick = { cadastrarUsuario(userName)
-                          mostrarToast("Usuario $userName cadastrado!", context = context)
+                onClick = {
+                    if (userNamesNoBancoDeDadosLocal.contains(userName)) {
+                        mostrarToast("Usuário $userName já cadastrado!", context = context)
+                    } else {
+                        cadastrarUsuario(userName)
+                        mostrarToast("Usuario $userName cadastrado com sucesso", context = context)
+                    }
                 },
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
@@ -195,5 +194,8 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TelaDeCadastroDeUsuarioPreview() {
-    TelaDeCadastroDeUsuario(navController = NavController(LocalContext.current), context = LocalContext.current)
+    TelaDeCadastroDeUsuario(
+        navController = NavController(LocalContext.current),
+        context = LocalContext.current
+    )
 }
