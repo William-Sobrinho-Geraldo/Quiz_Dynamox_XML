@@ -11,17 +11,18 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         private var INSTANCE: AppDatabase? = null
-
         fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "DB"
-                ).fallbackToDestructiveMigration().build()
-                INSTANCE = instance
-                instance
+            if (INSTANCE == null) {
+                synchronized(AppDatabase::class.java) {
+                    val instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "DB"
+                    ).fallbackToDestructiveMigration().build()
+                    INSTANCE = instance
+                }
             }
+            return INSTANCE!!
         }
     }
 }
