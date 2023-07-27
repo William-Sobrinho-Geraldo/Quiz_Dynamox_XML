@@ -114,37 +114,22 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                             cardEnabled = false
                             contadorRespostasCertas++
                             println("A quant de respostas certas atuais é:  $contadorRespostasCertas")
-                            if (alternativaEscolhida == 0) {
-                                respostaCerta = 0
+                            when(alternativaEscolhida){
+                                0 -> respostaCerta = 0
+                                1 -> respostaCerta = 1
+                                2 -> respostaCerta = 2
+                                3 -> respostaCerta = 3
+                                4 -> respostaCerta = 4
                             }
-                            if (alternativaEscolhida == 1) {
-                                respostaCerta = 1
-                            }
-                            if (alternativaEscolhida == 2) {
-                                respostaCerta = 2
-                            }
-                            if (alternativaEscolhida == 3) {
-                                respostaCerta = 3
-                            }
-                            if (alternativaEscolhida == 4) {
-                                respostaCerta = 4
-                            }
+
                             println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
-                            if (alternativaEscolhida == 0) {
-                                respostaErrada = 0
-                            }
-                            if (alternativaEscolhida == 1) {
-                                respostaErrada = 1
-                            }
-                            if (alternativaEscolhida == 2) {
-                                respostaErrada = 2
-                            }
-                            if (alternativaEscolhida == 3) {
-                                respostaErrada = 3
-                            }
-                            if (alternativaEscolhida == 4) {
-                                respostaErrada = 4
+                            when(alternativaEscolhida){
+                                0 -> respostaErrada = 0
+                                1 -> respostaErrada = 1
+                                2 -> respostaErrada = 2
+                                3 -> respostaErrada = 3
+                                4 -> respostaErrada = 4
                             }
                             cardEnabled = false
                             respostaCerta = 10
@@ -153,15 +138,11 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         println("deu ruim")
                     }
                 }
-
-                override fun onFailure(call: Call<ServerResponse>, t: Throwable) {
-                    t.printStackTrace()
-                }
+                override fun onFailure(call: Call<ServerResponse>, t: Throwable) {t.printStackTrace()}
             })
         }
     }
 
-    // Exibe a pergunta e as opções recebidas da API
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -186,17 +167,12 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         )
         Spacer(modifier = Modifier.height(40.dp))
 
-        if (optionss?.size == 5) {
-            println("A lista tem 5 opções")
-        }
-
         for (index in 0 until 5) {
-            val backgroundColor = if (index == respostaCerta) {
-                CardDefaults.cardColors(containerColor = Color.Green)
-            } else if (index == respostaErrada) {
-                CardDefaults.cardColors(containerColor = Color.Red)
-            } else {
-                CardDefaults.cardColors(containerColor = Color.DarkGray)
+            val option = optionss?.getOrNull(index)
+            val backgroundColor = when (index) {
+                respostaCerta -> { CardDefaults.cardColors(containerColor = Color.Green) }
+                respostaErrada -> { CardDefaults.cardColors(containerColor = Color.Red) }
+                else -> { CardDefaults.cardColors(containerColor = Color.DarkGray) }
             }
 
             Card(
@@ -204,26 +180,24 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 colors = backgroundColor,
                 modifier = modifierCard,
                 onClick = {
-                    if (cardEnabled) {
+                    if (cardEnabled && option != null) {
                         checkAnswer(
                             url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
-                            userAnswer = optionss!![index]
+                            userAnswer = option
                         )
                         alternativaEscolhida = index
                     }
                 }
             ) {
                 Text(
-                    text = "${'A' + index}) ${optionss!![index]}",
+                    text = "${'A' + index}) $option",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
                 )
             }
-
             Spacer(modifier = Modifier.height(10.dp))
         }
-
         Spacer(modifier = Modifier.height(65.dp))
 
         Button(

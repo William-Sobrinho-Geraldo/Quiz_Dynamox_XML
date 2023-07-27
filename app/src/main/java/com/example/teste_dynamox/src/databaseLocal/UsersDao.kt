@@ -1,6 +1,7 @@
 package com.example.teste_dynamox.src.databaseLocal
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -12,4 +13,7 @@ interface UsersDao {
 
     @Query("SELECT * FROM tabela_de_usuarios")
     suspend fun buscaTodosUsuarios() : List<Users>
+
+    @Delete
+    suspend fun deletarUsuario (user : Users)
 }

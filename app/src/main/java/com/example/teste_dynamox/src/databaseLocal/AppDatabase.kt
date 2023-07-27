@@ -22,19 +22,6 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
-
-
-//            if (INSTANCE == null) {
-//                //criar Database
-//                synchronized(AppDatabase::class) {
-//                    INSTANCE = Room.databaseBuilder(
-//                        context.applicationContext,
-//                        AppDatabase::class.java,
-//                        "DB"
-//                    ).build()
-//                }
-//            }
-//            return INSTANCE!!
         }
     }
 }
