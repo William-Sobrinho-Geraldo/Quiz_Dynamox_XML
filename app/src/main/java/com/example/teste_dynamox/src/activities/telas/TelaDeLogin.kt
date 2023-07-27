@@ -31,7 +31,6 @@ import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 var statement: String? = null
@@ -62,6 +61,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
         if (podeNavegarParaOutraTela) navController.navigate("tela_de_questoes/$statement")
     }
 
+
     fun fazerRequisicaoENavegarParaProximaTela() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -75,14 +75,12 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                 } else {
                     println("A requisição falhou!")
                 }
-
                 podeNavegarParaOutraTela = true
             } catch (e: Exception) {
                 println("O erro encontrado foi: $e")
             }
         }
     }
-
 
     // CONSTRUINDO A TELA DE LOGIN
     LazyColumn(
@@ -96,7 +94,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                         Color(0xFF181818),
                     )
                 )
-                //    color = Color(0xFF232323)
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -154,9 +151,11 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                 onClick = {
                     if (userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal) {
                         fazerRequisicaoENavegarParaProximaTela()
-                    } else mostrarToast("Usuário $userNameDigitadoPeloUsuario não cadastrado", context = context)
+                    } else mostrarToast(
+                        "Usuário $userNameDigitadoPeloUsuario não cadastrado",
+                        context = context
+                    )
                 },
-                //enabled = userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal,
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
                     .padding(horizontal = 26.dp)
