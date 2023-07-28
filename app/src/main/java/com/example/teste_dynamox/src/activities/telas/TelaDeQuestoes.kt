@@ -53,7 +53,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 var numeroDaPergunta = 1
-var contadorRespostasCertas = 0
+var contadorRespostasCertas : Long = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

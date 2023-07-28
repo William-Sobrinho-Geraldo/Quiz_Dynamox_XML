@@ -9,10 +9,10 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(entity = Users::class, parentColumns = ["id"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE)]
     )
 data class jogosDosUsuaios(
-    @PrimaryKey(autoGenerate = true) val jogoId: Long = 0,
+    @PrimaryKey(autoGenerate = true) val jogoId: Int = 0,
     var userId : Long?,
     val dataDoJogo: Long = 0,
-    val quantDeAcertos: Int = 0,
-    val quantDeErros: Int = 0
+    val quantDeAcertos: Long = 0,
+    val quantDeErros: Long = 0
 )
 

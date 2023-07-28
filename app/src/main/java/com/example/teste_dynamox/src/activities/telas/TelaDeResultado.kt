@@ -55,7 +55,7 @@ fun TelaDeResultado(navController: NavController) {
         }
     }
 
-    fun inserirJogoPeloUserIdEReiniciarOQuiz(userId: Long?, quantDeAcertos: Int, quantDeErros: Int) {
+    fun inserirJogoPeloUserIdEReiniciarOQuiz(userId: Long?, quantDeAcertos: Long, quantDeErros: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             jogosDao.inserirJogo(
                 jogosDosUsuaios(
@@ -75,7 +75,7 @@ fun TelaDeResultado(navController: NavController) {
         }
     }
 
-    fun inserirJogoPeloUserIdEMostrarHistorico(userId: Long?, quantDeAcertos: Int, quantDeErros: Int) {
+    fun inserirJogoPeloUserIdEMostrarHistorico(userId: Long?, quantDeAcertos: Long, quantDeErros: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             jogosDao.inserirJogo(
                 jogosDosUsuaios(

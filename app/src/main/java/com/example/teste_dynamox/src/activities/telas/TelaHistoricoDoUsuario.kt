@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,38 +33,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-var quantDeJogos : Int = 2
+import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
+
+var listaDeJogosDoUsuario = mutableListOf<jogosDosUsuaios>()
+var listaQuantAcertos = mutableStateListOf<Long>()
+var listaQuantErros = mutableStateListOf<Long>()
 @Composable
 fun TelaHistoricoDoUsuario(navController: NavController) {
+    var quantDeJogos by remember { mutableStateOf(4) }
 
-    var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
 
+    println("fora do LaunchEffect listaQuantAcertos.size é:  ${listaQuantAcertos.size}")
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         quantDeJogos = jogosDao.buscarQuantTotalDeJogosPorID(userId = idUsuarioLogado)
-        println("A quantDeJogos é :  $quantDeJogos" )
+        
+        val listaCertasRecebida = jogosDao.buscaQuantCertasPorUserId(userId = idUsuarioLogado)
+        val listaErradasRecebida = jogosDao.buscaQuantDeErrosPorUserId(userId = idUsuarioLogado)
+        println("ListaCertasRecebida foi:  $listaCertasRecebida")
+        println("ListaErrosRecebido foi:  $listaErradasRecebida")
+        listaQuantAcertos.addAll(listaCertasRecebida)
+        listaQuantErros.addAll(listaErradasRecebida)
+        println("Para o userId $idUsuarioLogado A quantDeJogos é :  $quantDeJogos")
+        println("Para o userID $idUsuarioLogado tivemos uma lista de ${listaQuantAcertos.size} de tamanho, a lista é : $listaQuantAcertos")
+        println("Para o userID $idUsuarioLogado tivemos uma lista de ${listaQuantErros.size} de tamanho, a lista é : $listaQuantErros")
     }
 
-    LaunchedEffect(podeNavegarParaOutraTela) {
-        if (podeNavegarParaOutraTela) {
-            navController.navigate("tela_historico_do_usuario")
-        }
-    }
 
-    fun salvarResultadosEReiniciarQuiz(
-        idDoUsuario: Long,
-        dataDoJogo: String,
-        quantRespostasCertas: Int,
-        quantRespostasErradas: Int
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -81,7 +78,7 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
 
         ) {
         Text(
-            text = "    O histórico do usuário é  ",
+            text = "    O histórico de jogos de $userNameUsuarioLogado é ",
             fontSize = 30.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
@@ -95,34 +92,36 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text("Jogo ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
-            Text("Certas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
-            Text("Erradas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
+            Text("Jogo ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Certas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Erradas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        for (indice in 1 .. quantDeJogos) {
-
+        for (indice: Int in 0 until quantDeJogos) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                var contadorRespostasErradas = 10 - contadorRespostasCertas
-                Text("${indice}º", fontSize = 30.sp, color = Color.White)
+                //var quantRespErradas  : Long? = 10 - quantRespCertas!!
+                Text("${indice + 1}º", fontSize = 30.sp, color = Color.White,modifier = Modifier.padding(start = 45.dp))
+                val certas = listaQuantAcertos.getOrNull(indice)
                 Text(
-                    "$contadorRespostasErradas",
+                    "${certas}",
                     color = Color.Green,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                 )
+                val erradas = listaQuantErros.getOrNull(indice)
                 Text(
-                    "$contadorRespostasErradas",
+                    "${erradas}",
                     color = Color.Red,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 40.dp)
                 )
             }
         }

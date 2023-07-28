@@ -39,6 +39,7 @@ var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
 val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
 var idUsuarioLogado : Long? = null
+var userNameUsuarioLogado : String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +79,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                 if (idEncontrado != null){
                     println("idEncontrado foi :  $idEncontrado")
                     idUsuarioLogado=idEncontrado
+                    userNameUsuarioLogado=userNameDigitadoPeloUsuario
                 } else println("não encontramos nada")
 
                 //buscando dados das perguntas - API
