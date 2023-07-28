@@ -35,13 +35,13 @@ import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+var quantDeJogos : Int = 2
 @Composable
 fun TelaHistoricoDoUsuario(navController: NavController) {
 
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
-    var quantDeJogos : Int = 2
+
 
     LaunchedEffect(Unit){
         quantDeJogos = jogosDao.buscarQuantTotalDeJogosPorID(userId = idUsuarioLogado)
@@ -124,17 +124,14 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                 )
-
             }
-
-
         }
-
 
         Spacer(modifier = Modifier.height(70.dp))
 
         Button(
             onClick = {
+
                 contadorRespostasCertas = 0
                 numeroDaPergunta = 1
 
