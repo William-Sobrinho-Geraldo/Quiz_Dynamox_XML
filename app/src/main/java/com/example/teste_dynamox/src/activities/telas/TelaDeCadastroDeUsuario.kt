@@ -46,10 +46,10 @@ import androidx.navigation.NavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
+import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +61,7 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
     println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
     val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
 
 
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
@@ -74,12 +75,21 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
         userNamesNoBancoDeDadosLocal.addAll(userNames)
     }
 
-    fun cadastrarUsuario(userName: String) {
-        CoroutineScope(Dispatchers.IO).launch { userDao.inserirNovoUsuario(Users(userName = userName)) }
+    fun cadastrarUsuarioESeusJogos(userName: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val user = Users(userName = userName)
+            val jogo = jogosDosUsuaios(0,0,0,0)
+
+            val userId = userDao.inserirNovoUsuario(user)
+            jogo.userId = userId
+            jogosDao.inserirJogo(jogo)
+        }
     }
 
     LaunchedEffect(isApiRequestCompleted) {
-        if (isApiRequestCompleted) { navController.navigate("tela_de_questoes/$statement") }
+        if (isApiRequestCompleted) {
+            navController.navigate("tela_de_questoes/$statement")
+        }
     }
 
     LazyColumn(
@@ -152,7 +162,7 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
                     if (userNamesNoBancoDeDadosLocal.contains(userName)) {
                         mostrarToast("Usuário $userName já cadastrado!", context = context)
                     } else {
-                        cadastrarUsuario(userName)
+                        cadastrarUsuarioESeusJogos(userName)
                         mostrarToast("Usuario $userName cadastrado com sucesso", context = context)
                     }
                 },

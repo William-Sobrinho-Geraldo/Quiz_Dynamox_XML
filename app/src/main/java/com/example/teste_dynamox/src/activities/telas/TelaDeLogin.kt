@@ -28,6 +28,7 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
+import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,23 +38,30 @@ var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
 val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
+var idUsuarioLogado : Long? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
     var userNameDigitadoPeloUsuario by remember { mutableStateOf("") }
     val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
 
     println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
     println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
+//    LaunchedEffect(Unit){
+//       // userDao.deletarUsuario(Users(id = 2,""))
+//        jogosDao.deletarJogos(jogosDosUsuaios(id=1))
+//    }
+
+
+
     LaunchedEffect(Unit) {
         usuariosNoBancoDeDados.addAll(userDao.buscaTodosUsuarios())
-        println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
         val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
-        println("usernames é:  $userNames")
         userNamesNoBancoDeDadosLocal.addAll(userNames)
     }
 
@@ -65,6 +73,14 @@ fun TelaDeLogin(navController: NavController, context: Context) {
     fun fazerRequisicaoENavegarParaProximaTela() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                //buscando usuário logado - LOCALMENTE
+                val idEncontrado = userDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
+                if (idEncontrado != null){
+                    println("idEncontrado foi :  $idEncontrado")
+                    idUsuarioLogado=idEncontrado
+                } else println("não encontramos nada")
+
+                //buscando dados das perguntas - API
                 val response = quizApi.getPergunta()
                 if (response.isSuccessful) {
                     val quizResponse = response.body()

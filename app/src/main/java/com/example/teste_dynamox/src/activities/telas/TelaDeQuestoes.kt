@@ -69,6 +69,8 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
     var alternativaEscolhida: Int? = null
     var cardEnabled by remember { mutableStateOf(true) }
     var requisicaoCompleta by remember { mutableStateOf(false) }
+
+    println("idUsuarioLogado é:   $idUsuarioLogado")
     LaunchedEffect(requisicaoCompleta) {
         if (requisicaoCompleta) {
             navController.navigate("tela_de_questoes/{statement}")

@@ -9,10 +9,13 @@ import androidx.room.Query
 @Dao
 interface UsersDao {
     @Insert(onConflict = REPLACE)
-    suspend fun inserirNovoUsuario(user: Users)
+    suspend fun inserirNovoUsuario(user: Users): Long
 
     @Query("SELECT * FROM tabela_de_usuarios")
     suspend fun buscaTodosUsuarios() : List<Users>
+
+    @Query("SELECT id FROM tabela_de_usuarios WHERE userName = :userName")
+    suspend fun buscaIdPeloUserName (userName : String) : Long?
 
     @Delete
     suspend fun deletarUsuario (user : Users)

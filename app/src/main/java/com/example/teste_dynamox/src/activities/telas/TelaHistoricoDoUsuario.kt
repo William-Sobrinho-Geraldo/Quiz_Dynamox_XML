@@ -32,37 +32,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
-import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun TelaDeResultado(navController: NavController) {
-    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
-    var podeNavegarParaOutraPagina by remember { mutableStateOf(false) }
-    LaunchedEffect(podeNavegarParaOutraPagina) {
-        if (podeNavegarParaOutraPagina) {
-            navController.navigate("tela_de_questoes/{statement}")
-            contadorRespostasCertas = 0
-            numeroDaPergunta = 1
+fun TelaHistoricoDoUsuario(navController: NavController) {
+
+    var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
+    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+
+    LaunchedEffect(podeNavegarParaOutraTela) {
+        if (podeNavegarParaOutraTela) {
+            navController.navigate("tela_historico_do_usuario")
         }
     }
 
-    fun inserirJogoPeloUserIdEReiniciarOQuiz(userId: Long?, quantDeAcertos: Int, quantDeErros: Int) {
+    fun salvarResultadosEReiniciarQuiz(
+        idDoUsuario: Long,
+        dataDoJogo: String,
+        quantRespostasCertas: Int,
+        quantRespostasErradas: Int
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
-            jogosDao.inserirJogo(
-                jogosDosUsuaios(
-                    userId = userId,
-                    quantDeAcertos = quantDeAcertos,
-                    quantDeErros = quantDeErros
-                )
-            )
-            podeNavegarParaOutraPagina = true
-            println("A quant de acertos foi $contadorRespostasCertas e de erros foi ${Math.abs(contadorRespostasCertas - 10)}")
+
         }
     }
-
 
     Column(
         modifier = Modifier
@@ -75,14 +70,12 @@ fun TelaDeResultado(navController: NavController) {
                         Color(0xFF181818),
                     )
                 )
-                //    color = Color(0xFF232323)
             ),
-        //verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
         Text(
-            text = "    Obrigado por participar do Quiz Dynamox, seu resultado foi: ",
+            text = "    O histórico do usuário é  ",
             fontSize = 30.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
@@ -126,11 +119,9 @@ fun TelaDeResultado(navController: NavController) {
 
         Button(
             onClick = {
-                inserirJogoPeloUserIdEReiniciarOQuiz(
-                    userId = idUsuarioLogado,
-                    quantDeAcertos = contadorRespostasCertas,
-                    quantDeErros = Math.abs(contadorRespostasCertas - 10)
-                )
+                contadorRespostasCertas = 0
+                numeroDaPergunta = 1
+
             },
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
@@ -158,6 +149,6 @@ fun TelaDeResultado(navController: NavController) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TelaDeResultadoPreview() {
-    TelaDeResultado(navController = NavController(LocalContext.current))
+fun TelaHistoricoDoUsuarioPreview() {
+    TelaHistoricoDoUsuario(navController = NavController(LocalContext.current))
 }
