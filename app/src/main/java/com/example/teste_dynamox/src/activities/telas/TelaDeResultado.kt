@@ -40,12 +40,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun TelaDeResultado(navController: NavController) {
     val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
-    var podeNavegarParaOutraPagina by remember { mutableStateOf(false) }
-    LaunchedEffect(podeNavegarParaOutraPagina) {
-        if (podeNavegarParaOutraPagina) {
+    var podeReiniciarOQuiz by remember { mutableStateOf(false) }
+    var podeMostrarHistorico by remember { mutableStateOf(false) }
+    LaunchedEffect(podeReiniciarOQuiz) {
+        if (podeReiniciarOQuiz) {
             navController.navigate("tela_de_questoes/{statement}")
             contadorRespostasCertas = 0
             numeroDaPergunta = 1
+        }
+    }
+    LaunchedEffect(podeMostrarHistorico) {
+        if (podeMostrarHistorico) {
+            navController.navigate("tela_historico_do_usuario")
         }
     }
 
@@ -58,10 +64,37 @@ fun TelaDeResultado(navController: NavController) {
                     quantDeErros = quantDeErros
                 )
             )
-            podeNavegarParaOutraPagina = true
-            println("A quant de acertos foi $contadorRespostasCertas e de erros foi ${Math.abs(contadorRespostasCertas - 10)}")
+            podeReiniciarOQuiz = true
+            println(
+                "A quant de acertos foi $contadorRespostasCertas e de erros foi ${
+                    Math.abs(
+                        contadorRespostasCertas - 10
+                    )
+                }"
+            )
         }
     }
+
+    fun inserirJogoPeloUserIdEMostrarHistorico(userId: Long?, quantDeAcertos: Int, quantDeErros: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            jogosDao.inserirJogo(
+                jogosDosUsuaios(
+                    userId = userId,
+                    quantDeAcertos = quantDeAcertos,
+                    quantDeErros = quantDeErros
+                )
+            )
+            podeMostrarHistorico = true
+            println(
+                "A quant de acertos foi $contadorRespostasCertas e de erros foi ${
+                    Math.abs(
+                        contadorRespostasCertas - 10
+                    )
+                }"
+            )
+        }
+    }
+
 
 
     Column(
@@ -131,6 +164,7 @@ fun TelaDeResultado(navController: NavController) {
                     quantDeAcertos = contadorRespostasCertas,
                     quantDeErros = Math.abs(contadorRespostasCertas - 10)
                 )
+
             },
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
@@ -153,6 +187,38 @@ fun TelaDeResultado(navController: NavController) {
         ) {
             Text("Reiniciar Quiz", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
+        Spacer(modifier = Modifier.height(40.dp))
+        Button(
+            onClick = {
+                inserirJogoPeloUserIdEMostrarHistorico(
+                    userId = idUsuarioLogado,
+                    quantDeAcertos = contadorRespostasCertas,
+                    quantDeErros = Math.abs(contadorRespostasCertas - 10)
+                )
+
+            },
+            contentPadding = PaddingValues(4.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF76110C),
+                            Color(0xFFCC481A),
+                            Color(0xFFFEC651),
+                        )
+                    )
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent
+            )
+
+        ) {
+            Text("Histórico de jogos", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        }
+
     }
 }
 

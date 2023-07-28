@@ -40,7 +40,13 @@ import kotlinx.coroutines.launch
 fun TelaHistoricoDoUsuario(navController: NavController) {
 
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
-    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
+    var quantDeJogos : Int = 2
+
+    LaunchedEffect(Unit){
+        quantDeJogos = jogosDao.buscarQuantTotalDeJogosPorID(userId = idUsuarioLogado)
+        println("A quantDeJogos é :  $quantDeJogos" )
+    }
 
     LaunchedEffect(podeNavegarParaOutraTela) {
         if (podeNavegarParaOutraTela) {
@@ -81,6 +87,7 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(25.dp)
         )
+        Spacer(modifier = Modifier.height(40.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,32 +95,41 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text("Respostas certas: ", fontSize = 18.sp, color = Color.White)
-            Text(
-                "$contadorRespostasCertas",
-                color = Color.Green,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(25.dp)
-            )
+            Text("Jogo ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
+            Text("Certas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
+            Text("Erradas ", fontSize = 30.sp, color = Color.White, fontWeight = FontWeight.Bold,)
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            var contadorRespostasErradas = 10 - contadorRespostasCertas
-            Text("Respostas erradas: ", fontSize = 18.sp, color = Color.White)
-            Text(
-                "$contadorRespostasErradas",
-                color = Color.Red,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(25.dp),
-            )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        for (indice in 1 .. quantDeJogos) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                var contadorRespostasErradas = 10 - contadorRespostasCertas
+                Text("${indice}º", fontSize = 30.sp, color = Color.White)
+                Text(
+                    "$contadorRespostasErradas",
+                    color = Color.Green,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    "$contadorRespostasErradas",
+                    color = Color.Red,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+            }
+
+
         }
+
 
         Spacer(modifier = Modifier.height(70.dp))
 
@@ -142,7 +158,7 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             )
 
         ) {
-            Text("Reiniciar Quiz", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("Novo jogo", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
