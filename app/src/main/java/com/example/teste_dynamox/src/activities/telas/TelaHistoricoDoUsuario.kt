@@ -43,7 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 val listaQuantErros = mutableStateListOf<Long>()
-val listaQuantAcertos =  mutableStateListOf<Long>()
+val listaQuantAcertos = mutableStateListOf<Long>()
 
 @Composable
 fun TelaHistoricoDoUsuario(navController: NavController) {
@@ -51,26 +51,19 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
     val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var novoJogo by remember { mutableStateOf(false) }
 
-    println("fora do LaunchEffect listaQuantAcertos.size é:  ${listaQuantAcertos.size} e a listaQuantAcertos toda é $listaQuantAcertos")
-    println("fora do LaunchEffect listaQuantAcertos.size é:  ${listaQuantErros.size} e a listaQuantAcertos toda é $listaQuantErros")
-    println("fora do LaunchedEffet o contadorRespostasCertas  é $contadorRespostasCertas")
-
     LaunchedEffect(Unit) {
         quantDeJogos = jogosDao.buscarQuantTotalDeJogosPorID(userId = idUsuarioLogado)
 
         val listaCertasRecebida = jogosDao.buscaQuantCertasPorUserId(userId = idUsuarioLogado)
         val listaErradasRecebida = jogosDao.buscaQuantDeErrosPorUserId(userId = idUsuarioLogado)
-        println("DENTRO DO LAUNCHEDEFFECT ListaCertasRecebida foi:  $listaCertasRecebida")
-        println("DENTRO DO LAUNCHEDEFFECT ListaErrosRecebido foi:  $listaErradasRecebida")
+
         listaQuantAcertos.clear()
         listaQuantAcertos.addAll(listaCertasRecebida)
         listaQuantErros.clear()
         listaQuantErros.addAll(listaErradasRecebida)
-        println("Para o userId $idUsuarioLogado A quantDeJogos é :  $quantDeJogos")
-        println("Para o userID $idUsuarioLogado tivemos uma lista de ${listaQuantAcertos.size} de tamanho, a lista é : $listaQuantAcertos")
-        println("Para o userID $idUsuarioLogado tivemos uma lista de ${listaQuantErros.size} de tamanho, a lista é : $listaQuantErros")
     }
 
+    //navegar quando o botão Novo Jogo for acionado
     LaunchedEffect(novoJogo) {
         if (novoJogo) { navController.navigate("tela_de_questoes/$statement") }
     }
@@ -115,46 +108,46 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        items(quantDeJogos-1) {index ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+        items(quantDeJogos - 1) { index ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
 
                 ) {
-                    Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
-                        Text("${index + 1}º", fontSize = 30.sp, color = Color.White)
-                    }
-                    val listaQuantAcertosExcluindoPrimeiroItem = listaQuantAcertos.drop(1)
-                    val certas = listaQuantAcertosExcluindoPrimeiroItem.getOrNull(index)
-                    println("O item de indice $index da listaQuantAcertos foi $certas ")
-                    Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            "$certas",
-                            color = Color.Green,
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                    val listaQuantErrosExcluindoPrimeiroItem = listaQuantErros.drop(1)
-                    val erradas = listaQuantErrosExcluindoPrimeiroItem.getOrNull(index)
-                    println("O item de indice $index da listaQuantErros foi $erradas ")
-                    Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            "$erradas",
-                            color = Color.Red,
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(end = 40.dp)
-                        )
-                    }
+                Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
+                    Text("${index + 1}º", fontSize = 30.sp, color = Color.White)
                 }
-            Spacer(modifier = Modifier.height(16.dp))
+                val listaQuantAcertosExcluindoPrimeiroItem = listaQuantAcertos.drop(1)
+                val certas = listaQuantAcertosExcluindoPrimeiroItem.getOrNull(index)
+                Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        "$certas",
+                        color = Color.Green,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                val listaQuantErrosExcluindoPrimeiroItem = listaQuantErros.drop(1)
+                val erradas = listaQuantErrosExcluindoPrimeiroItem.getOrNull(index)
+                Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        "$erradas",
+                        color = Color.Red,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(end = 55.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
         }
 
         item {
+            Spacer(modifier = Modifier.height(25.dp))
+
             Button(
                 onClick = {
                     novoJogo = true
@@ -178,11 +171,9 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
                 )
-
             ) {
                 Text("Novo jogo", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             }
-
         }
     }
 }

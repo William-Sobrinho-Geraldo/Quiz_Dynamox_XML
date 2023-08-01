@@ -48,9 +48,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
 
-    println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
-    println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
-
 
     LaunchedEffect(Unit) {
         usuariosNoBancoDeDados.addAll(userDao.buscaTodosUsuarios())
@@ -58,18 +55,14 @@ fun TelaDeLogin(navController: NavController, context: Context) {
         userNamesNoBancoDeDadosLocal.addAll(userNames)
     }
 
+    //Navegar para telaDeQuestões após concluir a requisição
     LaunchedEffect(podeNavegarParaOutraTela) {
         if (podeNavegarParaOutraTela) navController.navigate("tela_de_questoes/$statement")
     }
 
-    LaunchedEffect(Unit) {
-        userDao.deletarUsuario(Users(id = 1, ""))
-        userDao.deletarUsuario(Users(id = 2, ""))
-    }
-
 
     fun fazerRequisicaoENavegarParaProximaTela() {
-        val job = CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 //buscando usuário logado - LOCALMENTE
                 val idEncontrado = userDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
@@ -77,7 +70,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                     println("idEncontrado foi :  $idEncontrado")
                     idUsuarioLogado = idEncontrado
                     userNameUsuarioLogado = userNameDigitadoPeloUsuario
-                } else println("não encontramos nada")
+                } else println("não encontramos nenhum usuário")
 
                 //buscando dados das perguntas - API
                 val response = quizApi.getPergunta()
@@ -86,7 +79,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                     statement = quizResponse?.statement
                     optionss = quizResponse?.options
                     id = quizResponse?.id
-                    println("TelaDeLogin APÓS O GET -> O ID é $id, statement é: $statement e optionss é : $optionss")
                 } else {
                     println("A requisição falhou!")
                 }

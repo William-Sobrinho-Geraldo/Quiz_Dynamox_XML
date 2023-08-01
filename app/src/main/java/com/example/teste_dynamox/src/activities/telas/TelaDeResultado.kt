@@ -42,6 +42,8 @@ fun TelaDeResultado(navController: NavController) {
     val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var podeReiniciarOQuiz by remember { mutableStateOf(false) }
     var podeMostrarHistorico by remember { mutableStateOf(false) }
+
+    //Reiniciar o quiz caso o botão reiniciar quiz seja clicado
     LaunchedEffect(podeReiniciarOQuiz) {
         if (podeReiniciarOQuiz) {
             navController.navigate("tela_de_questoes/{statement}")
@@ -49,10 +51,9 @@ fun TelaDeResultado(navController: NavController) {
             numeroDaPergunta = 1
         }
     }
+    //Navegar para histórico caso o botão Histórico de jogos seja clicado
     LaunchedEffect(podeMostrarHistorico) {
-        if (podeMostrarHistorico) {
-            navController.navigate("tela_historico_do_usuario")
-        }
+        if (podeMostrarHistorico) { navController.navigate("tela_historico_do_usuario") }
     }
 
     fun inserirJogoPeloUserIdEReiniciarOQuiz(userId: Long?, quantDeAcertos: Long, quantDeErros: Long) {
@@ -65,13 +66,6 @@ fun TelaDeResultado(navController: NavController) {
                 )
             )
             podeReiniciarOQuiz = true
-            println(
-                "A quant de acertos foi $contadorRespostasCertas e de erros foi ${
-                    Math.abs(
-                        contadorRespostasCertas - 10
-                    )
-                }"
-            )
         }
     }
 
@@ -214,7 +208,6 @@ fun TelaDeResultado(navController: NavController) {
         ) {
             Text("Histórico de jogos", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
-
     }
 }
 

@@ -25,7 +25,7 @@ fun SetupNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            TelaDeQuestoes(navController = navController)
+            TelaDeQuestoes(navController = navController, context = LocalContext.current)
         }
         composable(route = "tela_de_resultado") {
             TelaDeResultado(navController = navController)

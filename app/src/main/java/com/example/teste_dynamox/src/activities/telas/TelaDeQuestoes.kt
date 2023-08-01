@@ -42,6 +42,7 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.ApiService
 import com.example.teste_dynamox.src.api.ServerResponse
+import com.example.teste_dynamox.src.util.mostrarToast
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ var contadorRespostasCertas: Long = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaDeQuestoes(navController: NavController) {
+fun TelaDeQuestoes(navController: NavController, context: Context) {
     val modifierCard: Modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
@@ -67,19 +68,17 @@ fun TelaDeQuestoes(navController: NavController) {
 
     var respostaCerta by remember { mutableStateOf(10) }
     var respostaErrada by remember { mutableStateOf(10) }
-    var alternativaEscolhida: Int? = null
+    var alternativaEscolhida : Int? by remember { mutableStateOf(null) }
     var cardEnabled by remember { mutableStateOf(true) }
     var requisicaoCompleta by remember { mutableStateOf(false) }
 
-    println("idUsuarioLogado é:   $idUsuarioLogado")
+    //Navegar para tela de questões após concluir a requisição
     LaunchedEffect(requisicaoCompleta) {
-        if (requisicaoCompleta) {
-            navController.navigate("tela_de_questoes/{statement}")
-        }
+        if (requisicaoCompleta) { navController.navigate("tela_de_questoes/{statement}") }
     }
 
     fun atualizarPagina() {
-        val job = CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = ApiService.quizApi.getPergunta()
                 if (response.isSuccessful) {
@@ -116,7 +115,6 @@ fun TelaDeQuestoes(navController: NavController) {
                         if (serverResponse == ServerResponse(result = true)) {
                             cardEnabled = false
                             contadorRespostasCertas++
-                            println("A quant de respostas certas atuais é:  $contadorRespostasCertas")
                             when (alternativaEscolhida) {
                                 0 -> respostaCerta = 0
                                 1 -> respostaCerta = 1
@@ -124,8 +122,6 @@ fun TelaDeQuestoes(navController: NavController) {
                                 3 -> respostaCerta = 3
                                 4 -> respostaCerta = 4
                             }
-
-                            println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
                             when (alternativaEscolhida) {
                                 0 -> respostaErrada = 0
@@ -138,7 +134,7 @@ fun TelaDeQuestoes(navController: NavController) {
                             respostaCerta = 10
                         }
                     } else {
-                        println("deu ruim")
+                        println("Resposta do servidor foi: Failure")
                     }
                 }
 
@@ -217,8 +213,12 @@ fun TelaDeQuestoes(navController: NavController) {
         Button(
             onClick = {
                 if (numeroDaPergunta < 10) {
-                    atualizarPagina()
-                    numeroDaPergunta++
+                    if (alternativaEscolhida == null) {
+                        mostrarToast("Escolha uma alternativa antes de ir para próxima questão", context = context)
+                    } else {
+                        atualizarPagina()
+                        numeroDaPergunta++
+                    }
                 } else {
                     navController.navigate("tela_de_resultado")
                 }
@@ -255,6 +255,6 @@ fun TelaDeQuestoes(navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaDeQuestoesPreview() {
-    TelaDeQuestoes(navController = rememberNavController())
+    TelaDeQuestoes(navController = rememberNavController(), context = LocalContext.current)
 }
 
