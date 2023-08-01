@@ -95,7 +95,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         }
     }
 
-    fun checkAnswer(url: String?, userAnswer: String) {
+    fun conferirResposta(url: String?, userAnswer: String) {
         GlobalScope.launch(Dispatchers.IO) {
             val answerRequest = AnswerRequest(answer = userAnswer)
             val requestBody =
@@ -191,7 +191,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 modifier = modifierCard,
                 onClick = {
                     if (cardEnabled && option != null) {
-                        checkAnswer(
+                        conferirResposta(
                             url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
                             userAnswer = option
                         )
