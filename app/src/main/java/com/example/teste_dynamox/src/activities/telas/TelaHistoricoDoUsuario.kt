@@ -115,7 +115,7 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        items(quantDeJogos) {index ->
+        items(quantDeJogos-1) {index ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -127,8 +127,8 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
                     Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
                         Text("${index + 1}º", fontSize = 30.sp, color = Color.White)
                     }
-
-                    val certas = listaQuantAcertos.getOrNull(index)
+                    val listaQuantAcertosExcluindoPrimeiroItem = listaQuantAcertos.drop(1)
+                    val certas = listaQuantAcertosExcluindoPrimeiroItem.getOrNull(index)
                     println("O item de indice $index da listaQuantAcertos foi $certas ")
                     Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
                         Text(
@@ -138,7 +138,8 @@ fun TelaHistoricoDoUsuario(navController: NavController) {
                             fontWeight = FontWeight.Bold,
                         )
                     }
-                    val erradas = listaQuantErros.getOrNull(index)
+                    val listaQuantErrosExcluindoPrimeiroItem = listaQuantErros.drop(1)
+                    val erradas = listaQuantErrosExcluindoPrimeiroItem.getOrNull(index)
                     println("O item de indice $index da listaQuantErros foi $erradas ")
                     Box(modifier = Modifier.padding(start = 45.dp), contentAlignment = Alignment.Center) {
                         Text(
