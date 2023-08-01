@@ -28,7 +28,6 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.ApiService.quizApi
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
-import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,26 +37,19 @@ var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
 val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
-var idUsuarioLogado : Long? = null
-var userNameUsuarioLogado : String? = ""
+var idUsuarioLogado: Long? = null
+var userNameUsuarioLogado: String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
     var userNameDigitadoPeloUsuario by remember { mutableStateOf("") }
     val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
-    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
 
     println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
     println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
-
-//    LaunchedEffect(Unit){
-//       // userDao.deletarUsuario(Users(id = 2,""))
-//        jogosDao.deletarJogos(jogosDosUsuaios(id=1))
-//    }
-
 
 
     LaunchedEffect(Unit) {
@@ -70,16 +62,21 @@ fun TelaDeLogin(navController: NavController, context: Context) {
         if (podeNavegarParaOutraTela) navController.navigate("tela_de_questoes/$statement")
     }
 
+    LaunchedEffect(Unit) {
+        userDao.deletarUsuario(Users(id = 1, ""))
+        userDao.deletarUsuario(Users(id = 2, ""))
+    }
+
 
     fun fazerRequisicaoENavegarParaProximaTela() {
-        CoroutineScope(Dispatchers.IO).launch {
+        val job = CoroutineScope(Dispatchers.IO).launch {
             try {
                 //buscando usuário logado - LOCALMENTE
                 val idEncontrado = userDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
-                if (idEncontrado != null){
+                if (idEncontrado != null) {
                     println("idEncontrado foi :  $idEncontrado")
-                    idUsuarioLogado=idEncontrado
-                    userNameUsuarioLogado=userNameDigitadoPeloUsuario
+                    idUsuarioLogado = idEncontrado
+                    userNameUsuarioLogado = userNameDigitadoPeloUsuario
                 } else println("não encontramos nada")
 
                 //buscando dados das perguntas - API
@@ -152,7 +149,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                 ),
                 modifier = Modifier
                     .padding(bottom = 16.dp)
-//                .border(BorderStroke(5.dp,Color.Transparent))
                     .border(
                         width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
                             colors = listOf(

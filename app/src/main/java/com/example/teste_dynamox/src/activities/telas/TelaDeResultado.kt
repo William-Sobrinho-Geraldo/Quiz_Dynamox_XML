@@ -95,8 +95,6 @@ fun TelaDeResultado(navController: NavController) {
         }
     }
 
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,9 +106,7 @@ fun TelaDeResultado(navController: NavController) {
                         Color(0xFF181818),
                     )
                 )
-                //    color = Color(0xFF232323)
             ),
-        //verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {

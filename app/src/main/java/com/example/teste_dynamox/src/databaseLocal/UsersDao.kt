@@ -12,13 +12,14 @@ interface UsersDao {
     suspend fun inserirNovoUsuario(user: Users): Long
 
     @Query("SELECT * FROM tabela_de_usuarios")
-    suspend fun buscaTodosUsuarios() : List<Users>
+    suspend fun buscaTodosUsuarios(): List<Users>
 
     @Query("SELECT id FROM tabela_de_usuarios WHERE userName = :userName")
-    suspend fun buscaIdPeloUserName (userName : String) : Long?
+    suspend fun buscaIdPeloUserName(userName: String): Long?
 
     @Query("SELECT userName FROM tabela_de_usuarios WHERE id = :userId")
-    suspend fun buscaUserNamePeloUserId (userId : Long) : String
+    suspend fun buscaUserNamePeloUserId(userId: Long): String
+
     @Delete
-    suspend fun deletarUsuario (user : Users)
+    suspend fun deletarUsuario(user: Users)
 }

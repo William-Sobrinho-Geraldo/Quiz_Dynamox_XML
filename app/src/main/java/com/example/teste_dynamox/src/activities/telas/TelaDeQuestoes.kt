@@ -43,6 +43,7 @@ import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.ApiService
 import com.example.teste_dynamox.src.api.ServerResponse
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,11 +54,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 var numeroDaPergunta = 1
-var contadorRespostasCertas : Long = 0
+var contadorRespostasCertas: Long = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaDeQuestoes(navController: NavController, context: Context) {
+fun TelaDeQuestoes(navController: NavController) {
     val modifierCard: Modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
@@ -78,7 +79,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
     }
 
     fun atualizarPagina() {
-        GlobalScope.launch(Dispatchers.IO) {
+        val job = CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = ApiService.quizApi.getPergunta()
                 if (response.isSuccessful) {
@@ -116,7 +117,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                             cardEnabled = false
                             contadorRespostasCertas++
                             println("A quant de respostas certas atuais é:  $contadorRespostasCertas")
-                            when(alternativaEscolhida){
+                            when (alternativaEscolhida) {
                                 0 -> respostaCerta = 0
                                 1 -> respostaCerta = 1
                                 2 -> respostaCerta = 2
@@ -126,7 +127,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
 
                             println("a Alternativa escolhida foi: $alternativaEscolhida")
                         } else {
-                            when(alternativaEscolhida){
+                            when (alternativaEscolhida) {
                                 0 -> respostaErrada = 0
                                 1 -> respostaErrada = 1
                                 2 -> respostaErrada = 2
@@ -140,7 +141,10 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                         println("deu ruim")
                     }
                 }
-                override fun onFailure(call: Call<ServerResponse>, t: Throwable) {t.printStackTrace()}
+
+                override fun onFailure(call: Call<ServerResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
             })
         }
     }
@@ -172,9 +176,17 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         for (index in 0 until 5) {
             val option = optionss?.getOrNull(index)
             val backgroundColor = when (index) {
-                respostaCerta -> { CardDefaults.cardColors(containerColor = Color.Green) }
-                respostaErrada -> { CardDefaults.cardColors(containerColor = Color.Red) }
-                else -> { CardDefaults.cardColors(containerColor = Color.DarkGray) }
+                respostaCerta -> {
+                    CardDefaults.cardColors(containerColor = Color.Green)
+                }
+
+                respostaErrada -> {
+                    CardDefaults.cardColors(containerColor = Color.Red)
+                }
+
+                else -> {
+                    CardDefaults.cardColors(containerColor = Color.DarkGray)
+                }
             }
 
             Card(
@@ -243,6 +255,6 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaDeQuestoesPreview() {
-    TelaDeQuestoes(navController = rememberNavController(), context = LocalContext.current)
+    TelaDeQuestoes(navController = rememberNavController())
 }
 

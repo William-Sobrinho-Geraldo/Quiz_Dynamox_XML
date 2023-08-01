@@ -12,14 +12,15 @@ interface JogosDao {
     suspend fun inserirJogo(jogo: jogosDosUsuaios)
 
     @Query("SELECT COUNT(*) FROM tabela_de_jogos_dos_usuarios WHERE userId = :userId")
-    suspend fun buscarQuantTotalDeJogosPorID (userId : Long?) : Int
+    suspend fun buscarQuantTotalDeJogosPorID(userId: Long?): Int
 
     @Query("SELECT quantDeAcertos FROM tabela_de_jogos_dos_usuarios WHERE userid = :userId")
-    suspend fun buscaQuantCertasPorUserId (userId: Long?): MutableList<Long>
-    @Query("SELECT quantDeErros FROM tabela_de_jogos_dos_usuarios WHERE userid = :userId")
-    suspend fun buscaQuantDeErrosPorUserId (userId: Long?): MutableList<Long>
+    suspend fun buscaQuantCertasPorUserId(userId: Long?): MutableList<Long>
 
-      @Delete
+    @Query("SELECT quantDeErros FROM tabela_de_jogos_dos_usuarios WHERE userid = :userId")
+    suspend fun buscaQuantDeErrosPorUserId(userId: Long?): MutableList<Long>
+
+    @Delete
     suspend fun deletarJogos(jogoDoUsuario: jogosDosUsuaios)
 
 }
