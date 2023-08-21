@@ -42,6 +42,8 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.api.ServerResponse
+import com.example.teste_dynamox.src.databaseLocal.AppDatabase
+import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.src.util.mostrarToast
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -66,21 +68,29 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
         .clip(RoundedCornerShape(16.dp))
         .padding(horizontal = 16.dp)
 
+    val repository = Repository(
+        AppDatabase.getDatabase(LocalContext.current).userDao(),
+        AppDatabase.getDatabase(LocalContext.current).jogosDao(),
+        AppRetrofit.ServicesApi
+    )
     var respostaCerta by remember { mutableStateOf(10) }
     var respostaErrada by remember { mutableStateOf(10) }
-    var alternativaEscolhida : Int? by remember { mutableStateOf(null) }
+    var alternativaEscolhida: Int? by remember { mutableStateOf(null) }
     var cardEnabled by remember { mutableStateOf(true) }
     var requisicaoCompleta by remember { mutableStateOf(false) }
 
+
     //Navegar para tela de questões após concluir a requisição
     LaunchedEffect(requisicaoCompleta) {
-        if (requisicaoCompleta) { navController.navigate("tela_de_questoes/{statement}") }
+        if (requisicaoCompleta) {
+            navController.navigate("tela_de_questoes/{statement}")
+        }
     }
 
     fun atualizarPagina() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = AppRetrofit.ServicesApi.getPergunta()
+                val response = repository.getPerguntaRepository()
                 if (response.isSuccessful) {
                     val quizResponse = response.body()
                     statement = quizResponse?.statement
@@ -214,7 +224,10 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             onClick = {
                 if (numeroDaPergunta < 10) {
                     if (alternativaEscolhida == null) {
-                        mostrarToast("Escolha uma alternativa antes de ir para próxima questão", context = context)
+                        mostrarToast(
+                            "Escolha uma alternativa antes de ir para próxima questão",
+                            context = context
+                        )
                     } else {
                         atualizarPagina()
                         numeroDaPergunta++

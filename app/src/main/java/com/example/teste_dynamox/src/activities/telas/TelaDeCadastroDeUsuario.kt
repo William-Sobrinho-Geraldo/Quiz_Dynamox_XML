@@ -69,10 +69,6 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
         AppRetrofit.ServicesApi
     )
 
-//    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
-//    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
-
-
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
     println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
 
