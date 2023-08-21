@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.api.AnswerRequest
-import com.example.teste_dynamox.src.api.ApiService
+import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.api.ServerResponse
 import com.example.teste_dynamox.src.util.mostrarToast
 import com.google.gson.Gson
@@ -80,7 +80,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
     fun atualizarPagina() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiService.quizApi.getPergunta()
+                val response = AppRetrofit.ServicesApi.getPergunta()
                 if (response.isSuccessful) {
                     val quizResponse = response.body()
                     statement = quizResponse?.statement
@@ -101,7 +101,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             val requestBody =
                 RequestBody.create("application/json".toMediaType(), Gson().toJson(answerRequest))
             println("requestBody é:  $requestBody")
-            val call = ApiService.quizApi.checkAnswer(url, answerRequest)
+            val call = AppRetrofit.ServicesApi.checkAnswer(url, answerRequest)
 
             call.enqueue(object : Callback<ServerResponse> {
                 override fun onResponse(

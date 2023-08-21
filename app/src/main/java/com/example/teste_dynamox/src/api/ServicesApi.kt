@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
 
-interface QuizApi {
+interface ServicesApi {
     @GET(BASE_URL)
     suspend fun getPergunta(): Response<QuizModel>
 

@@ -17,6 +17,9 @@ interface UsersDao {
     @Query("SELECT id FROM tabela_de_usuarios WHERE userName = :userName")
     suspend fun buscaIdPeloUserName(userName: String): Long?
 
+    @Query("SELECT userName FROM tabela_de_usuarios WHERE userName = :userName")
+    suspend fun buscaUserNameNoBancoLocal(userName: String) : String?
+
     @Query("SELECT userName FROM tabela_de_usuarios WHERE id = :userId")
     suspend fun buscaUserNamePeloUserId(userId: Long): String
 

@@ -1,6 +1,7 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,9 +26,10 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
-import com.example.teste_dynamox.src.api.ApiService.quizApi
+import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
+import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,13 +46,15 @@ var userNameUsuarioLogado: String? = ""
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
     var userNameDigitadoPeloUsuario by remember { mutableStateOf("") }
-    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
-    var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
-
+    val usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
+    val repository = Repository(
+        dao = AppDatabase.getDatabase(LocalContext.current).userDao(),
+        ServicesApi = AppRetrofit.ServicesApi
+    )
 
     LaunchedEffect(Unit) {
-        usuariosNoBancoDeDados.addAll(userDao.buscaTodosUsuarios())
+        usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuariosRepository())
         val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
         userNamesNoBancoDeDadosLocal.addAll(userNames)
     }
@@ -65,15 +69,18 @@ fun TelaDeLogin(navController: NavController, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 //buscando usuário logado - LOCALMENTE
-                val idEncontrado = userDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
+                val idEncontrado = repository.buscaIdPeloUserNameRepository(userNameDigitadoPeloUsuario)
                 if (idEncontrado != null) {
                     println("idEncontrado foi :  $idEncontrado")
                     idUsuarioLogado = idEncontrado
                     userNameUsuarioLogado = userNameDigitadoPeloUsuario
                 } else println("não encontramos nenhum usuário")
 
+
                 //buscando dados das perguntas - API
-                val response = quizApi.getPergunta()
+                //val response = repository.getPerguntaRepository()
+                val response = repository.getPerguntaRepository()
+                Log.i("TAG", "response é:   $response  ")
                 if (response.isSuccessful) {
                     val quizResponse = response.body()
                     statement = quizResponse?.statement

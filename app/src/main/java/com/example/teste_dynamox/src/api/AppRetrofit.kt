@@ -5,11 +5,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://quiz-api-bwi5hjqyaq-uc.a.run.app"
 
-object ApiService {
+object AppRetrofit {
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val quizApi: QuizApi = retrofit.create(QuizApi::class.java)
+    val ServicesApi = retrofit.create(ServicesApi::class.java)
 }
