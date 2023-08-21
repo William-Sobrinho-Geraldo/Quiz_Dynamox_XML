@@ -44,9 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teste_dynamox.R
+import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
+import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,15 +62,22 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
     var isApiRequestCompleted by remember { mutableStateOf(false) }
     println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
-    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
-    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
+
+    val repository = Repository(
+        AppDatabase.getDatabase(LocalContext.current).userDao(),
+        AppDatabase.getDatabase(LocalContext.current).jogosDao(),
+        AppRetrofit.ServicesApi
+    )
+
+//    val userDao = AppDatabase.getDatabase(LocalContext.current).userDao()
+//    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
 
 
     var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
     println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
 
     LaunchedEffect(Unit) {
-        usuariosNoBancoDeDados.addAll(userDao.buscaTodosUsuarios())
+        usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuarios())
         println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
         val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
         println("usernames é:  $userNames")
@@ -80,9 +89,9 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
             val user = Users(userName = userName)
             val jogo = jogosDosUsuaios(0,0,0,0)
 
-            val userId = userDao.inserirNovoUsuario(user)
+            val userId = repository.inserirNovoUsuario(user)
             jogo.userId = userId
-            jogosDao.inserirJogo(jogo)
+            repository.inserirJogo(jogo)
         }
     }
 

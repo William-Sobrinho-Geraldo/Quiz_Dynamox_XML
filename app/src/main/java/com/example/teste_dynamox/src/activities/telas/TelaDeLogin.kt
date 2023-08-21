@@ -49,7 +49,8 @@ fun TelaDeLogin(navController: NavController, context: Context) {
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     val usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
     val repository = Repository(
-        dao = AppDatabase.getDatabase(LocalContext.current).userDao(),
+        usersDao = AppDatabase.getDatabase(LocalContext.current).userDao(),
+        jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao(),
         ServicesApi = AppRetrofit.ServicesApi
     )
 
