@@ -111,7 +111,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
             val requestBody =
                 RequestBody.create("application/json".toMediaType(), Gson().toJson(answerRequest))
             println("requestBody é:  $requestBody")
-            val call = AppRetrofit.ServicesApi.checkAnswer(url, answerRequest)
+            val call = repository.checkAnswerRepository(url, answerRequest)
 
             call.enqueue(object : Callback<ServerResponse> {
                 override fun onResponse(
@@ -185,11 +185,9 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
                 respostaCerta -> {
                     CardDefaults.cardColors(containerColor = Color.Green)
                 }
-
                 respostaErrada -> {
                     CardDefaults.cardColors(containerColor = Color.Red)
                 }
-
                 else -> {
                     CardDefaults.cardColors(containerColor = Color.DarkGray)
                 }

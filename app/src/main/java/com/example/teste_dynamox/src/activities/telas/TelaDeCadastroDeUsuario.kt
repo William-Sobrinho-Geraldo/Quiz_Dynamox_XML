@@ -73,7 +73,7 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
     println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
 
     LaunchedEffect(Unit) {
-        usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuarios())
+        usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuariosRepository())
         println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
         val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
         println("usernames é:  $userNames")
@@ -85,9 +85,9 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
             val user = Users(userName = userName)
             val jogo = jogosDosUsuaios(0,0,0,0)
 
-            val userId = repository.inserirNovoUsuario(user)
+            val userId = repository.inserirNovoUsuarioRepository(user)
             jogo.userId = userId
-            repository.inserirJogo(jogo)
+            repository.inserirJogoRepository(jogo)
         }
     }
 

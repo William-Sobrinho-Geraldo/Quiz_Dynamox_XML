@@ -31,17 +31,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
+import com.example.teste_dynamox.src.repository.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun TelaDeResultado(navController: NavController) {
-    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var podeReiniciarOQuiz by remember { mutableStateOf(false) }
     var podeMostrarHistorico by remember { mutableStateOf(false) }
+    val repository = Repository(
+        AppDatabase.getDatabase(LocalContext.current).userDao(),
+        AppDatabase.getDatabase(LocalContext.current).jogosDao(),
+        AppRetrofit.ServicesApi
+    )
 
     //Reiniciar o quiz caso o botão reiniciar quiz seja clicado
     LaunchedEffect(podeReiniciarOQuiz) {
@@ -53,12 +59,14 @@ fun TelaDeResultado(navController: NavController) {
     }
     //Navegar para histórico caso o botão Histórico de jogos seja clicado
     LaunchedEffect(podeMostrarHistorico) {
-        if (podeMostrarHistorico) { navController.navigate("tela_historico_do_usuario") }
+        if (podeMostrarHistorico) {
+            navController.navigate("tela_historico_do_usuario")
+        }
     }
 
     fun inserirJogoPeloUserIdEReiniciarOQuiz(userId: Long?, quantDeAcertos: Long, quantDeErros: Long) {
         CoroutineScope(Dispatchers.IO).launch {
-            jogosDao.inserirJogo(
+            repository.inserirJogoRepository(
                 jogosDosUsuaios(
                     userId = userId,
                     quantDeAcertos = quantDeAcertos,
@@ -71,7 +79,7 @@ fun TelaDeResultado(navController: NavController) {
 
     fun inserirJogoPeloUserIdEMostrarHistorico(userId: Long?, quantDeAcertos: Long, quantDeErros: Long) {
         CoroutineScope(Dispatchers.IO).launch {
-            jogosDao.inserirJogo(
+            repository.inserirJogoRepository(
                 jogosDosUsuaios(
                     userId = userId,
                     quantDeAcertos = quantDeAcertos,
@@ -80,11 +88,8 @@ fun TelaDeResultado(navController: NavController) {
             )
             podeMostrarHistorico = true
             println(
-                "A quant de acertos foi $contadorRespostasCertas e de erros foi ${
-                    Math.abs(
-                        contadorRespostasCertas - 10
-                    )
-                }"
+                "A quant de acertos foi $contadorRespostasCertas e " +
+                        "de erros foi ${Math.abs(contadorRespostasCertas - 10)}"
             )
         }
     }

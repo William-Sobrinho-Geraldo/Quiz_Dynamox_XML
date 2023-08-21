@@ -1,11 +1,14 @@
 package com.example.teste_dynamox.src.repository
 
+import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.QuizModel
+import com.example.teste_dynamox.src.api.ServerResponse
 import com.example.teste_dynamox.src.api.ServicesApi
 import com.example.teste_dynamox.src.databaseLocal.JogosDao
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.databaseLocal.UsersDao
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
+import retrofit2.Call
 import retrofit2.Response
 
 
@@ -26,15 +29,17 @@ class Repository(
         return usersDao.buscaTodosUsuarios()
     }
 
-    suspend fun buscaTodosUsuarios(): List<Users> {
-        return usersDao.buscaTodosUsuarios()
-    }
-
-    suspend fun inserirJogo(jogo: jogosDosUsuaios) {
+    suspend fun inserirJogoRepository(jogo: jogosDosUsuaios) {
         return jogosDao.inserirJogo(jogo)
     }
 
-    suspend fun inserirNovoUsuario(user: Users): Long? {
+    suspend fun inserirNovoUsuarioRepository(user: Users): Long? {
         return usersDao.inserirNovoUsuario(user)
     }
+
+    fun checkAnswerRepository(url: String?, answerRequest: AnswerRequest): Call<ServerResponse> {
+        return ServicesApi.checkAnswer(url,answerRequest)
+    }
+
+
 }
