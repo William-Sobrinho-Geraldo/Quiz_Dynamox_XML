@@ -3,7 +3,6 @@ package com.example.teste_dynamox.src.activities.telas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -36,11 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
-import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.teste_dynamox.src.repository.Repository
 
 val listaQuantErros = mutableStateListOf<Long>()
 val listaQuantAcertos = mutableStateListOf<Long>()
@@ -48,14 +43,19 @@ val listaQuantAcertos = mutableStateListOf<Long>()
 @Composable
 fun TelaHistoricoDoUsuario(navController: NavController) {
     var quantDeJogos by remember { mutableStateOf(4) }
-    val jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao()
     var novoJogo by remember { mutableStateOf(false) }
+    val repository = Repository(
+        AppDatabase.getDatabase(LocalContext.current).userDao(),
+        AppDatabase.getDatabase(LocalContext.current).jogosDao(),
+        AppRetrofit.ServicesApi
+    )
+
 
     LaunchedEffect(Unit) {
-        quantDeJogos = jogosDao.buscarQuantTotalDeJogosPorID(userId = idUsuarioLogado)
+        quantDeJogos = repository.buscarQuantTotalDeJogosPorIDRepository(userId = idUsuarioLogado)
 
-        val listaCertasRecebida = jogosDao.buscaQuantCertasPorUserId(userId = idUsuarioLogado)
-        val listaErradasRecebida = jogosDao.buscaQuantDeErrosPorUserId(userId = idUsuarioLogado)
+        val listaCertasRecebida = repository.buscaQuantCertasPorUserIdRepository(userId = idUsuarioLogado)
+        val listaErradasRecebida = repository.buscaQuantDeErrosPorUserIdRepository(userId = idUsuarioLogado)
 
         listaQuantAcertos.clear()
         listaQuantAcertos.addAll(listaCertasRecebida)

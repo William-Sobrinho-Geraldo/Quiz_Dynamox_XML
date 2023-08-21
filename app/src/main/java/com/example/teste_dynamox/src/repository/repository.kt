@@ -41,5 +41,17 @@ class Repository(
         return ServicesApi.checkAnswer(url,answerRequest)
     }
 
+    suspend fun buscarQuantTotalDeJogosPorIDRepository(userId: Long?): Int {
+        return jogosDao.buscarQuantTotalDeJogosPorID(userId)
+    }
+
+    suspend fun buscaQuantCertasPorUserIdRepository(userId: Long?): Collection<Long> {
+        return  jogosDao.buscaQuantCertasPorUserId(userId)
+    }
+
+    suspend fun buscaQuantDeErrosPorUserIdRepository(userId: Long?): Collection<Long> {
+        return jogosDao.buscaQuantDeErrosPorUserId(userId)
+    }
+
 
 }
