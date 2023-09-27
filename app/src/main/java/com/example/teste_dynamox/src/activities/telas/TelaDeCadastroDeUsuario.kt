@@ -24,10 +24,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teste_dynamox.R
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
@@ -53,164 +54,175 @@ import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
-    var userName by remember { mutableStateOf("") }
-    var isApiRequestCompleted by remember { mutableStateOf(false) }
-    println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
+fun TelaDeCadastroDeUsuario(
+   navController: NavController,
+   context: Context,
+) {
+   val viewModelTelaDeCadastroKoin: TelaDeCadastroDeUsuarioViewModel = koinViewModel()
+
+   val userNameDaTelaDeCadastroDeUsuario by viewModelTelaDeCadastroKoin.userNameTelaDeCadastroDeUsuario.collectAsState()
+   val isApiRequestCompleted by remember { mutableStateOf(false) }
+   println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
 
-    val repository = Repository(
-        AppDatabase.getDatabase(LocalContext.current).userDao(),
-        AppDatabase.getDatabase(LocalContext.current).jogosDao(),
-        AppRetrofit.ServicesApi
-    )
+   val repository = Repository(
+      AppDatabase.getDatabase(LocalContext.current).userDao(),
+      AppDatabase.getDatabase(LocalContext.current).jogosDao(),
+      AppRetrofit.ServicesApi
+   )
 
-    var usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
-    println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
+   val usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
+   println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
 
-    LaunchedEffect(Unit) {
-        usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuariosRepository())
-        println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
-        val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
-        println("usernames é:  $userNames")
-        userNamesNoBancoDeDadosLocal.addAll(userNames)
-    }
+   LaunchedEffect(Unit) {
+      usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuariosRepository())
+      println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
+      val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
+      println("usernames é:  $userNames")
+      userNamesNoBancoDeDadosLocal.addAll(userNames)
+   }
 
-    fun cadastrarUsuarioESeusJogos(userName: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = Users(userName = userName)
-            val jogo = jogosDosUsuaios(0,0,0,0)
+   fun cadastrarUsuarioESeusJogos(userName: String) {
+      CoroutineScope(Dispatchers.IO).launch {
+         val user = Users(userName = userName)
+         val jogo = jogosDosUsuaios(0, 0, 0, 0)
 
-            val userId = repository.inserirNovoUsuarioRepository(user)
-            jogo.userId = userId
-            repository.inserirJogoRepository(jogo)
-        }
-    }
+         val userId = repository.inserirNovoUsuarioRepository(user)
+         jogo.userId = userId
+         repository.inserirJogoRepository(jogo)
+      }
+   }
 
-    LaunchedEffect(isApiRequestCompleted) {
-        if (isApiRequestCompleted) {
-            navController.navigate("tela_de_questoes/$statement")
-        }
-    }
+   LaunchedEffect(isApiRequestCompleted) {
+      if (isApiRequestCompleted) {
+         navController.navigate("tela_de_questoes/$statement")
+      }
+   }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF2C2C2C),
-                        Color(0xFF44142D),
-                        Color(0xFF181818),
-                    )
-                )
-                //    color = Color(0xFF232323)
+   LazyColumn(
+      modifier = Modifier
+         .fillMaxSize()
+         .background(
+            Brush.verticalGradient(
+               colors = listOf(
+                  Color(0xFF2C2C2C),
+                  Color(0xFF44142D),
+                  Color(0xFF181818),
+               )
+            )
+            //    color = Color(0xFF232323)
+         ),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally,
+
+      ) {
+      item {
+         Text(
+            "Cadastre-se",
+            fontSize = 38.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(25.dp),
+            color = Color(0xFFffffff)
+
+         )
+         Spacer(modifier = Modifier.height(110.dp))
+
+         Text(
+            text = "Nome de usuário",
+            fontSize = 16.sp,
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(start = 78.dp),
+            color = Color(0xFFffffff)
+         )
+
+         OutlinedTextField(
+            textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+            value = viewModelTelaDeCadastroKoin.userNameTelaDeCadastroDeUsuario.collectAsState().value,
+            onValueChange = { novoValorDigitado: String ->
+               viewModelTelaDeCadastroKoin.atualizaUserName(novoValorDigitado)
+            },
+            placeholder = {
+               Text(
+                  "Cadastre seu username !",
+                  color = Color(0xFFffffff)
+               )
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+               keyboardType = KeyboardType.Text
             ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+               .padding(bottom = 16.dp)
+               //                .border(BorderStroke(5.dp,Color.Transparent))
+               .border(
+                  width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
+                     colors = listOf(
+                        Color(0xFFCC481A),
+                        Color(0xFFCC481A),
+                        Color(0xFF76110C)
+                     )
+                  )
+               )
+         )
+         Spacer(modifier = Modifier.height(64.dp))
 
-        ) {
-        item {
+         Button(
+            onClick = {
+               if (userNamesNoBancoDeDadosLocal.contains(userNameDaTelaDeCadastroDeUsuario)) {
+                  mostrarToast("Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!", context = context)
+               } else {
+                  cadastrarUsuarioESeusJogos(userNameDaTelaDeCadastroDeUsuario)
+                  mostrarToast(
+                     "Usuario $userNameDaTelaDeCadastroDeUsuario cadastrado com sucesso",
+                     context = context
+                  )
+               }
+            },
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+               .padding(horizontal = 26.dp)
+               .fillMaxWidth()
+               .clip(MaterialTheme.shapes.extraLarge)
+               .background(
+                  Brush.horizontalGradient(
+                     colors = listOf(
+                        Color(0xFF76110C),
+                        Color(0xFFCC481A),
+                        Color(0xFFFEC651),
+                     )
+                  )
+               ),
+            colors = ButtonDefaults.buttonColors(
+               containerColor = Color.Transparent
+            )
+         ) {
             Text(
-                "Cadastre-se",
-                fontSize = 38.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(25.dp),
-                color = Color(0xFFffffff)
-
+               "Cadastrar",
+               color = Color.White,
+               style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold)
             )
-            Spacer(modifier = Modifier.height(110.dp))
-
-            Text(
-                text = "Nome de usuário",
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 78.dp),
-                color = Color(0xFFffffff)
+            Spacer(modifier = Modifier.width(24.dp))
+            Icon(
+               imageVector = ImageVector.vectorResource(id = R.drawable.baseline_person_add_alt_1_24),
+               contentDescription = "Entrar",
+               modifier = Modifier.size(30.dp),
+               tint = Color.White
             )
-
-            OutlinedTextField(
-                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-                value = userName,
-                onValueChange = { userName = it },
-                placeholder = {
-                    Text(
-                        "Cadastre seu username !",
-                        color = Color(0xFFffffff)
-                    )
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text
-                ),
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-//                .border(BorderStroke(5.dp,Color.Transparent))
-                    .border(
-                        width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFFCC481A),
-                                Color(0xFFCC481A),
-                                Color(0xFF76110C)
-                            )
-                        )
-                    )
-            )
-            Spacer(modifier = Modifier.height(64.dp))
-
-            Button(
-                onClick = {
-                    if (userNamesNoBancoDeDadosLocal.contains(userName)) {
-                        mostrarToast("Usuário $userName já cadastrado!", context = context)
-                    } else {
-                        cadastrarUsuarioESeusJogos(userName)
-                        mostrarToast("Usuario $userName cadastrado com sucesso", context = context)
-                    }
-                },
-                contentPadding = PaddingValues(16.dp),
-                modifier = Modifier
-                    .padding(horizontal = 26.dp)
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF76110C),
-                                Color(0xFFCC481A),
-                                Color(0xFFFEC651),
-                            )
-                        )
-                    ),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                )
-            ) {
-                Text(
-                    "Cadastrar",
-                    color = Color.White,
-                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_person_add_alt_1_24),
-                    contentDescription = "Entrar",
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
-                )
-            }
-        }
-    }
+         }
+      }
+   }
 }
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TelaDeCadastroDeUsuarioPreview() {
-    TelaDeCadastroDeUsuario(
-        navController = NavController(LocalContext.current),
-        context = LocalContext.current
-    )
+   TelaDeCadastroDeUsuario(
+      navController = NavController(LocalContext.current),
+      context = LocalContext.current,
+   )
 }
