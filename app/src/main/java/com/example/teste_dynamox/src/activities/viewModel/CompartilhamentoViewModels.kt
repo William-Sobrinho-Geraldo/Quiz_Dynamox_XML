@@ -5,6 +5,6 @@ import com.example.teste_dynamox.src.repository.Repository
 
 class CompartilhamentoViewModels() : ViewModel() {
 
-   val TelaDeCadastroDeUsuarioViewModel = TelaDeCadastroDeUsuarioViewModel()
+   //val TelaDeCadastroDeUsuarioViewModel = TelaDeCadastroDeUsuarioViewModel()
    //abaixo vão entrar outros viewmodels um pra cada tela
 }

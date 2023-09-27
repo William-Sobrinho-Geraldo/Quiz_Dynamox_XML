@@ -21,15 +21,6 @@ import org.koin.core.parameter.parametersOf
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
 
-
-
-      //      val repository = Repository(
-      //         AppDatabase.getDatabase(LocalContext.current).userDao(),
-      //         AppDatabase.getDatabase(LocalContext.current).jogosDao(),
-      //         AppRetrofit.ServicesApi
-      //      )
-
-
       super.onCreate(savedInstanceState)
       setContent {
          Teste_DYNAMOXTheme {

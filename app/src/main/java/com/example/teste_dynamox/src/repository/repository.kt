@@ -33,7 +33,7 @@ class Repository(
         return jogosDao.inserirJogo(jogo)
     }
 
-    suspend fun inserirNovoUsuarioRepository(user: Users): Long? {
+    suspend fun inserirNovoUsuarioRepository(user: Users) {
         return usersDao.inserirNovoUsuario(user)
     }
 
@@ -53,5 +53,8 @@ class Repository(
         return jogosDao.buscaQuantDeErrosPorUserId(userId)
     }
 
+    suspend fun verificarSeUserNameEstaCadastrado(userName: String): Boolean? {
+        return usersDao.existeUserNameNoBancoLocal(userName)
+    }
 
 }

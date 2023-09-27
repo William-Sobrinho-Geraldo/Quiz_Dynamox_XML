@@ -1,23 +1,26 @@
 package com.example.teste_dynamox.src.activities.di
 
-import android.content.Context
-import com.example.teste_dynamox.src.activities.viewModel.CompartilhamentoViewModels
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.repository.Repository
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val mainModule = module {
 
-//   single { (context: Context) ->
-//      Repository(
-//         AppDatabase.getDatabase(context).userDao(),
-//         AppDatabase.getDatabase(context).jogosDao(),
-//         AppRetrofit.ServicesApi
-//      )
-//   }
+   single { AppDatabase.getDatabase(androidContext()).userDao() }
+   single { AppDatabase.getDatabase(androidContext()).jogosDao() }
+   single { AppRetrofit.ServicesApi }
 
-   viewModel { TelaDeCadastroDeUsuarioViewModel() }
+   single {
+      Repository(
+         usersDao = get(),
+         jogosDao = get(),
+         ServicesApi = get(),
+      )
+   }
+
+   viewModel { TelaDeCadastroDeUsuarioViewModel(repository = get()) }
 }

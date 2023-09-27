@@ -45,11 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
-import com.example.teste_dynamox.src.api.AppRetrofit
-import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
-import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
-import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,39 +60,36 @@ fun TelaDeCadastroDeUsuario(
    context: Context,
 ) {
    val viewModelTelaDeCadastroKoin: TelaDeCadastroDeUsuarioViewModel = koinViewModel()
-
    val userNameDaTelaDeCadastroDeUsuario by viewModelTelaDeCadastroKoin.userNameTelaDeCadastroDeUsuario.collectAsState()
-   val isApiRequestCompleted by remember { mutableStateOf(false) }
-   println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
-
-   val repository = Repository(
-      AppDatabase.getDatabase(LocalContext.current).userDao(),
-      AppDatabase.getDatabase(LocalContext.current).jogosDao(),
-      AppRetrofit.ServicesApi
-   )
-
-   val usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
-   println("usuariosNoBancoDeDados são: $usuariosNoBancoDeDados")
-
-   LaunchedEffect(Unit) {
-      usuariosNoBancoDeDados.addAll(repository.buscaTodosUsuariosRepository())
-      println("usuariosNoBancoDeDados são:  $usuariosNoBancoDeDados")
-      val userNames = usuariosNoBancoDeDados.map { user -> user.userName }
-      println("usernames é:  $userNames")
-      userNamesNoBancoDeDadosLocal.addAll(userNames)
+   suspend fun cadastrarUsuario() {
+         viewModelTelaDeCadastroKoin.inserirNovoUsuario(Users(userName = userNameDaTelaDeCadastroDeUsuario))
+         viewModelTelaDeCadastroKoin.inserirNovoJogo(Users(userName = userNameDaTelaDeCadastroDeUsuario))
    }
 
-   fun cadastrarUsuarioESeusJogos(userName: String) {
+   fun verificarUserName() {
       CoroutineScope(Dispatchers.IO).launch {
-         val user = Users(userName = userName)
-         val jogo = jogosDosUsuaios(0, 0, 0, 0)
-
-         val userId = repository.inserirNovoUsuarioRepository(user)
-         jogo.userId = userId
-         repository.inserirJogoRepository(jogo)
+         if (viewModelTelaDeCadastroKoin.verificaSeEstaCadastrado()!!) {
+            CoroutineScope(Dispatchers.Main).launch {
+               mostrarToast(
+                  "Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!",
+                  context = context
+               )
+            }
+         } else {
+            cadastrarUsuario()
+            CoroutineScope(Dispatchers.Main).launch {
+               mostrarToast(
+                  "Usuario $userNameDaTelaDeCadastroDeUsuario cadastrado com sucesso",
+                  context = context
+               )
+            }
+         }
       }
    }
+
+   val isApiRequestCompleted by remember { mutableStateOf(false) }
+   println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
    LaunchedEffect(isApiRequestCompleted) {
       if (isApiRequestCompleted) {
@@ -172,17 +165,7 @@ fun TelaDeCadastroDeUsuario(
          Spacer(modifier = Modifier.height(64.dp))
 
          Button(
-            onClick = {
-               if (userNamesNoBancoDeDadosLocal.contains(userNameDaTelaDeCadastroDeUsuario)) {
-                  mostrarToast("Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!", context = context)
-               } else {
-                  cadastrarUsuarioESeusJogos(userNameDaTelaDeCadastroDeUsuario)
-                  mostrarToast(
-                     "Usuario $userNameDaTelaDeCadastroDeUsuario cadastrado com sucesso",
-                     context = context
-                  )
-               }
-            },
+            onClick = { verificarUserName() },
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
                .padding(horizontal = 26.dp)
