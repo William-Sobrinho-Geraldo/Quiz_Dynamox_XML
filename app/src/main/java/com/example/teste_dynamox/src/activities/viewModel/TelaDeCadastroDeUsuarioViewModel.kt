@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import com.example.teste_dynamox.src.repository.Repository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class TelaDeCadastroDeUsuarioViewModel(
    private val repository: Repository,
@@ -18,18 +21,25 @@ class TelaDeCadastroDeUsuarioViewModel(
       _userNameTelaDeCadastroDeUsuario.value = novoUserName
    }
 
-   suspend fun verificaSeEstaCadastrado(): Boolean? {
-      return repository.verificarSeUserNameEstaCadastrado(_userNameTelaDeCadastroDeUsuario.value)
+   fun verificaSeEstaCadastrado(): Boolean {
+      var retornoDoRepository = false
+      CoroutineScope(Dispatchers.IO).launch {
+         retornoDoRepository = repository.verificarSeUserNameEstaCadastrado(_userNameTelaDeCadastroDeUsuario.value)
+      }
+      return retornoDoRepository
    }
 
-   suspend fun inserirNovoUsuario(user: Users) {
-
-      return repository.inserirNovoUsuarioRepository(user)
+   fun inserirNovoUsuario(user: Users) {
+      CoroutineScope(Dispatchers.IO).launch {
+         repository.inserirNovoUsuarioRepository(user)
+      }
    }
 
-   suspend fun inserirNovoJogo(user: Users){
-      val userId = repository.buscaIdPeloUserNameRepository(user.userName)
-      val jogo = jogosDosUsuaios(0, userId, 0, 0)
-      return repository.inserirJogoRepository(jogo)
+   fun inserirNovoJogo(user: Users) {
+      CoroutineScope(Dispatchers.IO).launch {
+         val userId = repository.buscaIdPeloUserNameRepository(user.userName)
+         val jogo = jogosDosUsuaios(0, userId, 0, 0)
+         repository.inserirJogoRepository(jogo)
+      }
    }
 }

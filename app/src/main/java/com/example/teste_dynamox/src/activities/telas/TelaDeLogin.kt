@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.Users
@@ -34,6 +35,7 @@ import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
@@ -45,13 +47,16 @@ var userNameUsuarioLogado: String? = ""
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
-    var userNameDigitadoPeloUsuario by remember { mutableStateOf("") }
+    val telaDeLoginViewModel : TelaDeLoginViewModel = koinViewModel()
+    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
+
+
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
     val usuariosNoBancoDeDados: MutableList<Users> = mutableListOf()
     val repository = Repository(
         usersDao = AppDatabase.getDatabase(LocalContext.current).userDao(),
         jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao(),
-        ServicesApi = AppRetrofit.ServicesApi
+        servicesApi = AppRetrofit.ServicesApi
     )
 
     LaunchedEffect(Unit) {
@@ -70,11 +75,11 @@ fun TelaDeLogin(navController: NavController, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 //buscando usuário logado - LOCALMENTE
-                val idEncontrado = repository.buscaIdPeloUserNameRepository(userNameDigitadoPeloUsuario)
+                val idEncontrado = repository.buscaIdPeloUserNameRepository(userNameDigitadoNoLogin.value)
                 if (idEncontrado != null) {
                     println("idEncontrado foi :  $idEncontrado")
                     idUsuarioLogado = idEncontrado
-                    userNameUsuarioLogado = userNameDigitadoPeloUsuario
+                    userNameUsuarioLogado = userNameDigitadoNoLogin.value
                 } else println("não encontramos nenhum usuário")
 
 
@@ -136,8 +141,9 @@ fun TelaDeLogin(navController: NavController, context: Context) {
             OutlinedTextField(
                 isError = true,
                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-                value = userNameDigitadoPeloUsuario,
-                onValueChange = { userNameDigitadoPeloUsuario = it },
+                value = userNameDigitadoNoLogin.value,
+                onValueChange = { novoUserName ->
+                    telaDeLoginViewModel.atualizaUserNameDigitado(novoUserName) },
                 placeholder = {
                     Text(
                         "Digite seu usuário aqui !",
@@ -163,10 +169,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
 
             Button(
                 onClick = {
-                    if (userNameDigitadoPeloUsuario in userNamesNoBancoDeDadosLocal) {
+                    if (userNameDigitadoNoLogin.value in userNamesNoBancoDeDadosLocal) {
                         fazerRequisicaoENavegarParaProximaTela()
                     } else mostrarToast(
-                        "Usuário $userNameDigitadoPeloUsuario não cadastrado",
+                        "Usuário ${userNameDigitadoNoLogin.value} não cadastrado",
                         context = context
                     )
                 },

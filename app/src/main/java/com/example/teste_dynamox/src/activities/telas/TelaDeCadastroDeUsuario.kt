@@ -47,54 +47,40 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.util.mostrarToast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TelaDeCadastroDeUsuario(
-   navController: NavController,
-   context: Context,
-) {
-   val viewModelTelaDeCadastroKoin: TelaDeCadastroDeUsuarioViewModel = koinViewModel()
-   val userNameDaTelaDeCadastroDeUsuario by viewModelTelaDeCadastroKoin.userNameTelaDeCadastroDeUsuario.collectAsState()
-
-   suspend fun cadastrarUsuario() {
-         viewModelTelaDeCadastroKoin.inserirNovoUsuario(Users(userName = userNameDaTelaDeCadastroDeUsuario))
-         viewModelTelaDeCadastroKoin.inserirNovoJogo(Users(userName = userNameDaTelaDeCadastroDeUsuario))
-   }
-
-   fun verificarUserName() {
-      CoroutineScope(Dispatchers.IO).launch {
-         if (viewModelTelaDeCadastroKoin.verificaSeEstaCadastrado()!!) {
-            CoroutineScope(Dispatchers.Main).launch {
-               mostrarToast(
-                  "Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!",
-                  context = context
-               )
-            }
-         } else {
-            cadastrarUsuario()
-            CoroutineScope(Dispatchers.Main).launch {
-               mostrarToast(
-                  "Usuario $userNameDaTelaDeCadastroDeUsuario cadastrado com sucesso",
-                  context = context
-               )
-            }
-         }
-      }
-   }
-
+fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
+   val telaDeCadastroViewModel: TelaDeCadastroDeUsuarioViewModel = koinViewModel()
+   val userNameDaTelaDeCadastroDeUsuario by telaDeCadastroViewModel.userNameTelaDeCadastroDeUsuario.collectAsState()
    val isApiRequestCompleted by remember { mutableStateOf(false) }
    println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
 
-   LaunchedEffect(isApiRequestCompleted) {
-      if (isApiRequestCompleted) {
-         navController.navigate("tela_de_questoes/$statement")
+
+   fun cadastrarUsuario() {
+      telaDeCadastroViewModel.inserirNovoUsuario(Users(userName = userNameDaTelaDeCadastroDeUsuario))
+      telaDeCadastroViewModel.inserirNovoJogo(Users(userName = userNameDaTelaDeCadastroDeUsuario))
+   }
+
+   fun verificarUserName() {
+      if (telaDeCadastroViewModel.verificaSeEstaCadastrado()) {
+         mostrarToast(
+            "Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!",
+            context = context,
+         )
+      } else {
+         cadastrarUsuario()
+         mostrarToast(
+            "Usuario $userNameDaTelaDeCadastroDeUsuario cadastrado com sucesso",
+            context = context,
+         )
       }
+   }
+
+   //VERIFICA SE COMPLETOU A REQUISIÇÃO E NAVEGA PARA OUTRA TELA
+   LaunchedEffect(isApiRequestCompleted) {
+      if (isApiRequestCompleted) navController.navigate("tela_de_questoes/$statement")
    }
 
    LazyColumn(
@@ -108,7 +94,6 @@ fun TelaDeCadastroDeUsuario(
                   Color(0xFF181818),
                )
             )
-            //    color = Color(0xFF232323)
          ),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -136,9 +121,9 @@ fun TelaDeCadastroDeUsuario(
 
          OutlinedTextField(
             textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-            value = viewModelTelaDeCadastroKoin.userNameTelaDeCadastroDeUsuario.collectAsState().value,
+            value = telaDeCadastroViewModel.userNameTelaDeCadastroDeUsuario.collectAsState().value,
             onValueChange = { novoValorDigitado: String ->
-               viewModelTelaDeCadastroKoin.atualizaUserName(novoValorDigitado)
+               telaDeCadastroViewModel.atualizaUserName(novoValorDigitado)
             },
             placeholder = {
                Text(
@@ -151,7 +136,6 @@ fun TelaDeCadastroDeUsuario(
             ),
             modifier = Modifier
                .padding(bottom = 16.dp)
-               //                .border(BorderStroke(5.dp,Color.Transparent))
                .border(
                   width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
                      colors = listOf(

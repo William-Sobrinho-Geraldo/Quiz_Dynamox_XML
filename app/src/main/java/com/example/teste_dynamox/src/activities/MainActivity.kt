@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.src.activities.telas.SetupNavGraph
 import com.example.teste_dynamox.src.activities.telas.TelaDeLogin
 import com.example.teste_dynamox.src.activities.viewModel.CompartilhamentoViewModels
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.repository.Repository
@@ -20,6 +21,8 @@ import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
+
+//      val viewModel by viewModels<TelaDeCadastroDeUsuarioViewModel>()
 
       super.onCreate(savedInstanceState)
       setContent {

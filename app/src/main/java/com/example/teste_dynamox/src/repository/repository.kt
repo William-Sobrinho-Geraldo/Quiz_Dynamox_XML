@@ -15,14 +15,14 @@ import retrofit2.Response
 class Repository(
     val usersDao: UsersDao,
     val jogosDao: JogosDao,
-    val ServicesApi: ServicesApi
+    val servicesApi: ServicesApi
 ) {
     suspend fun buscaIdPeloUserNameRepository(userNameDigitadoPeloUsuario: String): Long? {
         return usersDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
     }
 
     suspend fun getPerguntaRepository(): Response<QuizModel> {
-        return ServicesApi.getPergunta()
+        return servicesApi.getPergunta()
     }
 
     suspend fun buscaTodosUsuariosRepository(): List<Users> {
@@ -38,7 +38,7 @@ class Repository(
     }
 
     fun checkAnswerRepository(url: String?, answerRequest: AnswerRequest): Call<ServerResponse> {
-        return ServicesApi.checkAnswer(url,answerRequest)
+        return servicesApi.checkAnswer(url,answerRequest)
     }
 
     suspend fun buscarQuantTotalDeJogosPorIDRepository(userId: Long?): Int {
@@ -53,7 +53,7 @@ class Repository(
         return jogosDao.buscaQuantDeErrosPorUserId(userId)
     }
 
-    suspend fun verificarSeUserNameEstaCadastrado(userName: String): Boolean? {
+    suspend fun verificarSeUserNameEstaCadastrado(userName: String): Boolean {
         return usersDao.existeUserNameNoBancoLocal(userName)
     }
 
