@@ -1,6 +1,7 @@
 package com.example.teste_dynamox.src.activities.telas
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.api.ServerResponse
@@ -52,6 +55,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
+import org.koin.androidx.compose.koinViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,7 +65,12 @@ var contadorRespostasCertas: Long = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaDeQuestoes(navController: NavController, context: Context) {
+fun TelaDeQuestoes(navController: NavController, context: Context, telaDeLoginViewModel: TelaDeLoginViewModel) {
+    val usuarioLogadoQuestoes = telaDeLoginViewModel.usuarioLogado.collectAsState().value
+    Log.i("TeladeQuestoes", "Na   TelaDeQuestoes: o usuário logado é  $usuarioLogadoQuestoes")
+
+
+
     val modifierCard: Modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
@@ -266,6 +275,6 @@ fun TelaDeQuestoes(navController: NavController, context: Context) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaDeQuestoesPreview() {
-    TelaDeQuestoes(navController = rememberNavController(), context = LocalContext.current)
+    TelaDeQuestoes(navController = rememberNavController(), context = LocalContext.current, koinViewModel())
 }
 

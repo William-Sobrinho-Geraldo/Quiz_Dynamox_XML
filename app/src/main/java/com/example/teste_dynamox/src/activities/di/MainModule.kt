@@ -1,5 +1,6 @@
 package com.example.teste_dynamox.src.activities.di
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
@@ -17,8 +18,10 @@ val mainModule = module {
 
    single { Repository(usersDao = get(), jogosDao = get(), servicesApi = get()) }
 
-   viewModel {
+   single {
       TelaDeCadastroDeUsuarioViewModel(repository = get())
       TelaDeLoginViewModel(repository = get())
    }
+
+
 }

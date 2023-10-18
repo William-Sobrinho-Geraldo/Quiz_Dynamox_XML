@@ -1,5 +1,6 @@
 package com.example.teste_dynamox.src.activities.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
@@ -19,12 +20,14 @@ class TelaDeCadastroDeUsuarioViewModel(
 
    fun atualizaUserName(novoUserName: String) {
       _userNameTelaDeCadastroDeUsuario.value = novoUserName
+      Log.i("TAG", "atualizaUserName:  userNameTelaDeCadastroDeUsuario é : ${userNameTelaDeCadastroDeUsuario.value} ")
    }
 
    fun verificaSeEstaCadastrado(): Boolean {
       var retornoDoRepository = false
       CoroutineScope(Dispatchers.IO).launch {
-         retornoDoRepository = repository.verificarSeUserNameEstaCadastrado(_userNameTelaDeCadastroDeUsuario.value)
+         retornoDoRepository =
+            repository.verificarSeUserNameEstaCadastrado(_userNameTelaDeCadastroDeUsuario.value)
       }
       return retornoDoRepository
    }

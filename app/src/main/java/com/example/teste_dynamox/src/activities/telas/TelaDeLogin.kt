@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
@@ -35,20 +36,24 @@ import com.example.teste_dynamox.src.util.mostrarToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.compose.koinInject
 
 var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
 val userNamesNoBancoDeDadosLocal = mutableListOf<String>()
 var idUsuarioLogado: Long? = null
-var userNameUsuarioLogado: String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
-    val telaDeLoginViewModel : TelaDeLoginViewModel = koinViewModel()
+    //get<TelaDeLoginViewModel>()     koinInject()
+    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
     val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
+    //val usuarioLogado = telaDeLoginViewModel.usuarioLogado.collectAsState()
 
 
     var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
@@ -79,7 +84,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                 if (idEncontrado != null) {
                     println("idEncontrado foi :  $idEncontrado")
                     idUsuarioLogado = idEncontrado
-                    userNameUsuarioLogado = userNameDigitadoNoLogin.value
+                    telaDeLoginViewModel.atualizaUsuarioLogado(userNameDigitadoNoLogin.value)
                 } else println("não encontramos nenhum usuário")
 
 
@@ -101,6 +106,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
             }
         }
     }
+
 
     // CONSTRUINDO A TELA DE LOGIN
     LazyColumn(

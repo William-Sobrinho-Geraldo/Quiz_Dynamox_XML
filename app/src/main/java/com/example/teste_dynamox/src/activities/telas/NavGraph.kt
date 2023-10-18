@@ -2,11 +2,15 @@ package com.example.teste_dynamox.src.activities.telas
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun SetupNavGraph(
@@ -27,7 +31,11 @@ fun SetupNavGraph(
             }
          )
       ) {
-         TelaDeQuestoes(navController = navController, context = LocalContext.current)
+         TelaDeQuestoes(
+            navController = navController,
+            context = LocalContext.current,
+            telaDeLoginViewModel = koinViewModel()
+         )
       }
       composable(route = "tela_de_resultado") {
          TelaDeResultado(navController = navController)
@@ -39,7 +47,7 @@ fun SetupNavGraph(
          )
       }
       composable(route = "tela_historico_do_usuario") {
-         TelaHistoricoDoUsuario(navController = navController)
+         TelaHistoricoDoUsuario(navController = navController, koinViewModel())
       }
    }
 }
