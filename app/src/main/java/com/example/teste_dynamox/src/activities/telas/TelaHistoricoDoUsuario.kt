@@ -41,7 +41,6 @@ import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.repository.Repository
 import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 private const val TAG = "telaDeHistórico"
 val listaQuantErros = mutableStateListOf<Long>()
@@ -51,10 +50,9 @@ val listaQuantAcertos = mutableStateListOf<Long>()
 fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHistorico : TelaDeLoginViewModel) {
    KoinAndroidContext {
       //val telaDeLoginViewModelHistorico = koinViewModel<TelaDeLoginViewModel>()
-      val usuarioLogadoTelaDeHistorico =  telaDeLoginViewModelHistorico.usuarioLogado.collectAsState().value
-      Log.i(TAG, "TelaHistoricoDoUsuario:    usuarioLogado é   ${usuarioLogadoTelaDeHistorico}")
-
-
+      val usuarioLogadoTelaDeHistorico =  telaDeLoginViewModelHistorico.userNameLogado.collectAsState().value
+      Log.i(TAG, "TelaHistoricoDoUsuario:    usuarioLogado é   $usuarioLogadoTelaDeHistorico")
+      val idUserLogado = telaDeLoginViewModelHistorico.usuarioLogado.value?.id
       var quantDeJogos by remember { mutableStateOf(4) }
       var novoJogo by remember { mutableStateOf(false) }
       val repository = Repository(
@@ -65,10 +63,10 @@ fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHis
 
 
       LaunchedEffect(Unit) {
-         quantDeJogos = repository.buscarQuantTotalDeJogosPorIDRepository(userId = idUsuarioLogado)
+         quantDeJogos = repository.buscarQuantTotalDeJogosPorIDRepository(userId = idUserLogado)
 
-         val listaCertasRecebida = repository.buscaQuantCertasPorUserIdRepository(userId = idUsuarioLogado)
-         val listaErradasRecebida = repository.buscaQuantDeErrosPorUserIdRepository(userId = idUsuarioLogado)
+         val listaCertasRecebida = repository.buscaQuantCertasPorUserIdRepository(userId = idUserLogado)
+         val listaErradasRecebida = repository.buscaQuantDeErrosPorUserIdRepository(userId = idUserLogado)
 
          listaQuantAcertos.clear()
          listaQuantAcertos.addAll(listaCertasRecebida)
@@ -197,5 +195,5 @@ fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHis
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaHistoricoDoUsuarioPreview() {
-   TelaHistoricoDoUsuario(navController = NavController(LocalContext.current), koinViewModel<TelaDeLoginViewModel>())
+   TelaHistoricoDoUsuario(navController = NavController(LocalContext.current), koinViewModel())
 }

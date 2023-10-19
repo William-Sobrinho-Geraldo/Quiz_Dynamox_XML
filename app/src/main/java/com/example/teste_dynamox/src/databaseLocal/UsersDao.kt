@@ -14,6 +14,9 @@ interface UsersDao {
     @Query("SELECT * FROM tabela_de_usuarios")
     suspend fun buscaTodosUsuarios(): List<Users>
 
+    @Query("SELECT * FROM tabela_de_usuarios WHERE userName = :userNameLogado")
+    suspend fun buscaUsuarioLogadoPeloUserName( userNameLogado : String) : Users
+
     @Query("SELECT id FROM tabela_de_usuarios WHERE userName = :userName")
     suspend fun buscaIdPeloUserName(userName: String): Long?
 

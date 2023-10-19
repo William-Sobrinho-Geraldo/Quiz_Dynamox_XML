@@ -23,8 +23,6 @@ import org.koin.core.parameter.parametersOf
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
 
-//      val viewModel by viewModels<TelaDeCadastroDeUsuarioViewModel>()
-
 
       super.onCreate(savedInstanceState)
       setContent {

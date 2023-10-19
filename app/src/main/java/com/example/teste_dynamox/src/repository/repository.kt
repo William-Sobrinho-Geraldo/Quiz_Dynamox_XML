@@ -1,5 +1,6 @@
 package com.example.teste_dynamox.src.repository
 
+import androidx.lifecycle.MutableLiveData
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.QuizModel
 import com.example.teste_dynamox.src.api.ServerResponse
@@ -8,6 +9,8 @@ import com.example.teste_dynamox.src.databaseLocal.JogosDao
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.databaseLocal.UsersDao
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
 
@@ -54,7 +57,13 @@ class Repository(
     }
 
     suspend fun verificarSeUserNameEstaCadastrado(userName: String): Boolean {
-        return usersDao.existeUserNameNoBancoLocal(userName)
+        return withContext(Dispatchers.IO) {
+            usersDao.existeUserNameNoBancoLocal (userName)
+        }
+    }
+
+    suspend fun buscaUsuarioLogadoPeloUsername(userNameLogado: String): Users {
+        return usersDao.buscaUsuarioLogadoPeloUserName(userNameLogado)
     }
 
 }

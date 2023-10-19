@@ -55,8 +55,6 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
    val telaDeCadastroViewModel: TelaDeCadastroDeUsuarioViewModel = koinViewModel()
    val userNameDaTelaDeCadastroDeUsuario by telaDeCadastroViewModel.userNameTelaDeCadastroDeUsuario.collectAsState()
    val isApiRequestCompleted by remember { mutableStateOf(false) }
-   println("Os userNamesNoBancoDeDadosLocal são:  $userNamesNoBancoDeDadosLocal")
-
 
    fun cadastrarUsuario() {
       telaDeCadastroViewModel.inserirNovoUsuario(Users(userName = userNameDaTelaDeCadastroDeUsuario))
@@ -64,7 +62,7 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
    }
 
    fun verificarUserName() {
-      if (telaDeCadastroViewModel.verificaSeEstaCadastrado()) {
+      if (telaDeCadastroViewModel.verificaSeEstaCadastrado().value!!) {
          mostrarToast(
             "Usuário $userNameDaTelaDeCadastroDeUsuario já cadastrado!",
             context = context,

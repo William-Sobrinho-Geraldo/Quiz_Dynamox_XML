@@ -66,7 +66,7 @@ var contadorRespostasCertas: Long = 0
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeQuestoes(navController: NavController, context: Context, telaDeLoginViewModel: TelaDeLoginViewModel) {
-    val usuarioLogadoQuestoes = telaDeLoginViewModel.usuarioLogado.collectAsState().value
+    val usuarioLogadoQuestoes = telaDeLoginViewModel.userNameLogado.collectAsState().value
     Log.i("TeladeQuestoes", "Na   TelaDeQuestoes: o usuário logado é  $usuarioLogadoQuestoes")
 
 
