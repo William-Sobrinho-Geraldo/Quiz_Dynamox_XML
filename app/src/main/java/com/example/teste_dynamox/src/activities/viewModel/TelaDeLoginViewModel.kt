@@ -15,7 +15,14 @@ import kotlinx.coroutines.withContext
 private const val TAG = "telaDeloginViewModel"
 
 class TelaDeLoginViewModel(val repository: Repository) : ViewModel() {
-   val listaDeUsernames: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
+   private val _listaDeUsernames = MutableLiveData<List<String>>()
+   val listaDeUsernames = _listaDeUsernames
+
+   //VARIÁVEIS DAS PERGUNTAS
+   private val _statement = MutableLiveData<String>()
+   val statement = _statement.value
+
+
    private val _userNameDigitado = MutableStateFlow("")  //INTERNO
    val userNameDigitado = _userNameDigitado.asStateFlow()
 
@@ -26,7 +33,7 @@ class TelaDeLoginViewModel(val repository: Repository) : ViewModel() {
    fun buscaListaDeUserNames () {
       CoroutineScope(Dispatchers.IO).launch {
          val usuarios = repository.buscaTodosUsuariosRepository()
-         withContext(Dispatchers.Main) { listaDeUsernames.value = usuarios.map { users -> users.userName } }
+         withContext(Dispatchers.Main) { _listaDeUsernames.value = usuarios.map { users -> users.userName } }
       }
    }
 

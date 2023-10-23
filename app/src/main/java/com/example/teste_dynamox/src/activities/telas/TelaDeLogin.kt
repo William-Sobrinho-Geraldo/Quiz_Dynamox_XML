@@ -157,6 +157,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
          Button(
             onClick = {
                listaDeUserNamesNoBancoDeDados?.let {
+                  Log.i(
+                     TAG,
+                     "TelaDeLogin:  ListaDeUserNamesNoBancoDeDados é   $listaDeUserNamesNoBancoDeDados"
+                  )
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
                      fazerRequisicaoENavegarParaProximaTela()
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
