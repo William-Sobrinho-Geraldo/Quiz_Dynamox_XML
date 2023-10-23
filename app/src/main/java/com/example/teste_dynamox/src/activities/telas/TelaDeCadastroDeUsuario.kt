@@ -78,7 +78,7 @@ fun TelaDeCadastroDeUsuario(navController: NavController, context: Context) {
 
    //VERIFICA SE COMPLETOU A REQUISIÇÃO E NAVEGA PARA OUTRA TELA
    LaunchedEffect(isApiRequestCompleted) {
-      if (isApiRequestCompleted) navController.navigate("tela_de_questoes/$statement")
+      if (isApiRequestCompleted) navController.navigate("tela_de_questoes/$statementt")
    }
 
    LazyColumn(

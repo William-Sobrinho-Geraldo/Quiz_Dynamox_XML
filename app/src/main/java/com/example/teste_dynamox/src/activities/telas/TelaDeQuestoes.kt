@@ -102,10 +102,10 @@ fun TelaDeQuestoes(navController: NavController, context: Context, telaDeLoginVi
                 val response = repository.getPerguntaRepository()
                 if (response.isSuccessful) {
                     val quizResponse = response.body()
-                    statement = quizResponse?.statement
+                    statementt = quizResponse?.statement
                     optionss = quizResponse?.options
-                    id = quizResponse?.id
-                    quizResponse.let { println("TelaDeQuestões => O ID: $id Statement: $statement e optionss: $optionss") }
+                    idd = quizResponse?.id
+                    quizResponse.let { println("TelaDeQuestões => O ID: $idd Statement: $statementt e optionss: $optionss") }
                 }
             } catch (e: Exception) {
                 println("O erro foi $e")
@@ -180,7 +180,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context, telaDeLoginVi
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "    Questão $numeroDaPergunta de 10: $statement",
+            text = "    Questão $numeroDaPergunta de 10: $statementt",
             fontSize = 24.sp,
             color = Color(0xFFffffff),
             fontWeight = FontWeight.Bold,
@@ -209,7 +209,7 @@ fun TelaDeQuestoes(navController: NavController, context: Context, telaDeLoginVi
                 onClick = {
                     if (cardEnabled && option != null) {
                         conferirResposta(
-                            url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$id",
+                            url = "https://quiz-api-bwi5hjqyaq-uc.a.run.app/answer?questionId=$idd",
                             userAnswer = option
                         )
                         alternativaEscolhida = index

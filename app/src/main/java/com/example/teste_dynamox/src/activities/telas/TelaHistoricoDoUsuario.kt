@@ -77,7 +77,7 @@ fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHis
       //navegar quando o botão Novo Jogo for acionado
       LaunchedEffect(novoJogo) {
          if (novoJogo) {
-            navController.navigate("tela_de_questoes/$statement")
+            navController.navigate("tela_de_questoes/$statementt")
          }
       }
 

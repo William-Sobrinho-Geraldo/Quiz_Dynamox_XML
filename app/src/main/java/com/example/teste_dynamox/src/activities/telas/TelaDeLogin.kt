@@ -27,20 +27,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
-import com.example.teste_dynamox.src.api.AppRetrofit
-import com.example.teste_dynamox.src.databaseLocal.AppDatabase
-import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.src.util.mostrarToast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "TelaDeLogin"
 
-var statement: String? = null
+var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
-var id: String? = ""
+var idd: String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,42 +45,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
 
    telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
 
-
-   var requisicaoApiCompleta by remember { mutableStateOf(false) }
-   val repository = Repository(
-      usersDao = AppDatabase.getDatabase(LocalContext.current).userDao(),
-      jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao(),
-      servicesApi = AppRetrofit.ServicesApi
-   )
-
-
-   //Navegar para telaDeQuestões após requisicao Api Completa
-   LaunchedEffect(requisicaoApiCompleta) {
-      if (requisicaoApiCompleta) navController.navigate("tela_de_questoes/$statement")
-   }
-
-
-
-   fun fazerRequisicaoENavegarParaProximaTela() {
-      CoroutineScope(Dispatchers.IO).launch {
-         try {
-            //buscando dados das perguntas - API
-            val response = repository.getPerguntaRepository()
-            Log.i("TAG", "response é:   $response  ")
-            if (response.isSuccessful) {
-               val quizResponse = response.body()
-               statement = quizResponse?.statement
-               optionss = quizResponse?.options
-               id = quizResponse?.id
-            } else {
-               println("A requisição falhou!")
-            }
-            requisicaoApiCompleta = true
-         } catch (e: Exception) {
-            println("O erro encontrado foi: $e")
-         }
-      }
-   }
 
    // CONSTRUINDO A TELA DE LOGIN
    LazyColumn(
@@ -162,7 +120,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                      "TelaDeLogin:  ListaDeUserNamesNoBancoDeDados é   $listaDeUserNamesNoBancoDeDados"
                   )
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
-                     fazerRequisicaoENavegarParaProximaTela()
+                     telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela(navController)
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
 
                   } else mostrarToast(
