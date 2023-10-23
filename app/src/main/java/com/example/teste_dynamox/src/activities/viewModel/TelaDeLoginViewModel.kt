@@ -16,16 +16,14 @@ private const val TAG = "telaDeloginViewModel"
 
 class TelaDeLoginViewModel(val repository: Repository) : ViewModel() {
    val listaDeUsernames: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-   val usuarioLogado: MutableLiveData<Users> = MutableLiveData<Users>()
-
    private val _userNameDigitado = MutableStateFlow("")  //INTERNO
    val userNameDigitado = _userNameDigitado.asStateFlow()
 
-   private val _usuarioLogado = MutableStateFlow("eu")     //INTERNO
+   private val _usuarioLogado = MutableStateFlow<Users>(Users(userName = ""))     //INTERNO
    val userNameLogado = _usuarioLogado.asStateFlow()
 
 
-   fun buscaListaDeUsers() {
+   fun buscaListaDeUserNames () {
       CoroutineScope(Dispatchers.IO).launch {
          val usuarios = repository.buscaTodosUsuariosRepository()
          withContext(Dispatchers.Main) { listaDeUsernames.value = usuarios.map { users -> users.userName } }
@@ -35,15 +33,13 @@ class TelaDeLoginViewModel(val repository: Repository) : ViewModel() {
    fun buscaUsuarioLogadoPeloUserName(userNameLogado: String) {
       CoroutineScope(Dispatchers.IO).launch {
          withContext(Dispatchers.Main) {
-            usuarioLogado.value = repository.buscaUsuarioLogadoPeloUsername(userNameLogado)
+            _usuarioLogado.value = repository.buscaUsuarioLogadoPeloUsername(userNameLogado)
          }
-         Log.i(TAG, "buscaUsuarioLogadoPeloUserName: o usuarioLogado é :  ${usuarioLogado.value}")
+         Log.i(
+            TAG,
+            "buscaUsuarioLogadoPeloUserName: o usuario encontrado na lista de usuários  é :  ${userNameLogado}"
+         )
       }
-   }
-
-   fun atualizaUsuarioLogado(usuarioQueFezLogin: String) {
-      _usuarioLogado.value = usuarioQueFezLogin
-      Log.i(TAG, "atualizaUsuarioLogado:  usuarioLogado é o : ${userNameLogado.value}")
    }
 
    fun atualizaUserNameDigitado(novoUserName: String) {

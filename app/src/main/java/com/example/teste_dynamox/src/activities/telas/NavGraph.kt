@@ -38,7 +38,7 @@ fun SetupNavGraph(
          )
       }
       composable(route = "tela_de_resultado") {
-         TelaDeResultado(navController = navController)
+         TelaDeResultado(navController = navController, koinViewModel())
       }
       composable(route = "tela_de_cadastro_de_usuario") {
          TelaDeCadastroDeUsuario(

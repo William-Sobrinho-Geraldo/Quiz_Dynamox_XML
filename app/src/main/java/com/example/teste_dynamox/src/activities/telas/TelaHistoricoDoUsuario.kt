@@ -52,7 +52,7 @@ fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHis
       //val telaDeLoginViewModelHistorico = koinViewModel<TelaDeLoginViewModel>()
       val usuarioLogadoTelaDeHistorico =  telaDeLoginViewModelHistorico.userNameLogado.collectAsState().value
       Log.i(TAG, "TelaHistoricoDoUsuario:    usuarioLogado é   $usuarioLogadoTelaDeHistorico")
-      val idUserLogado = telaDeLoginViewModelHistorico.usuarioLogado.value?.id
+      val idUserLogado = telaDeLoginViewModelHistorico.userNameLogado.collectAsState().value.id
       var quantDeJogos by remember { mutableStateOf(4) }
       var novoJogo by remember { mutableStateOf(false) }
       val repository = Repository(
@@ -98,7 +98,7 @@ fun TelaHistoricoDoUsuario(navController: NavController, telaDeLoginViewModelHis
          ) {
          item {
             Text(
-               text = "    O histórico de jogos de $usuarioLogadoTelaDeHistorico é ",
+               text = "    O histórico de jogos de ${usuarioLogadoTelaDeHistorico.userName} é ",
                fontSize = 30.sp,
                color = Color.White,
                fontWeight = FontWeight.Bold,

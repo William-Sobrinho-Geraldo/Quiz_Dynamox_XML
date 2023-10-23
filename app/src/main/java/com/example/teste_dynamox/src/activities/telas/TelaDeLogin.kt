@@ -41,7 +41,6 @@ private const val TAG = "TelaDeLogin"
 var statement: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 var id: String? = ""
-var idUsuarioLogado: Long? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,10 +49,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
 
-   telaDeLoginViewModel.buscaListaDeUsers()    //POPULANDO A LISTA DE USERNAMES
+   telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
 
 
-   var podeNavegarParaOutraTela by remember { mutableStateOf(false) }
+   var requisicaoApiCompleta by remember { mutableStateOf(false) }
    val repository = Repository(
       usersDao = AppDatabase.getDatabase(LocalContext.current).userDao(),
       jogosDao = AppDatabase.getDatabase(LocalContext.current).jogosDao(),
@@ -61,24 +60,16 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    )
 
 
-   //Navegar para telaDeQuestões após concluir a requisição
-   LaunchedEffect(podeNavegarParaOutraTela) {
-      if (podeNavegarParaOutraTela) navController.navigate("tela_de_questoes/$statement")
+   //Navegar para telaDeQuestões após requisicao Api Completa
+   LaunchedEffect(requisicaoApiCompleta) {
+      if (requisicaoApiCompleta) navController.navigate("tela_de_questoes/$statement")
    }
+
 
 
    fun fazerRequisicaoENavegarParaProximaTela() {
       CoroutineScope(Dispatchers.IO).launch {
          try {
-            //buscando usuário logado - LOCALMENTE
-//            val idEncontrado = repository.buscaIdPeloUserNameRepository(userNameDigitadoNoLogin.value)
-//            if (idEncontrado != null) {
-//               println("idEncontrado foi :  $idEncontrado")
-//               idUsuarioLogado = idEncontrado
-//               telaDeLoginViewModel.atualizaUsuarioLogado(userNameDigitadoNoLogin.value)
-//            } else println("não encontramos nenhum usuário")
-
-
             //buscando dados das perguntas - API
             val response = repository.getPerguntaRepository()
             Log.i("TAG", "response é:   $response  ")
@@ -90,13 +81,12 @@ fun TelaDeLogin(navController: NavController, context: Context) {
             } else {
                println("A requisição falhou!")
             }
-            podeNavegarParaOutraTela = true
+            requisicaoApiCompleta = true
          } catch (e: Exception) {
             println("O erro encontrado foi: $e")
          }
       }
    }
-
 
    // CONSTRUINDO A TELA DE LOGIN
    LazyColumn(
@@ -166,12 +156,9 @@ fun TelaDeLogin(navController: NavController, context: Context) {
 
          Button(
             onClick = {
-               //val usuarioEstiverCadastrado = telaDeLoginViewModel.verificaSeOUsuarioEstaCadastrado(userNameDigitadoNoLogin.value)
-               // Log.i(TAG, "TelaDeLogin: usuarioEstiverCadastrado  é :   $usuarioEstiverCadastrado")
                listaDeUserNamesNoBancoDeDados?.let {
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
                      fazerRequisicaoENavegarParaProximaTela()
-                     telaDeLoginViewModel.atualizaUsuarioLogado(userNameDigitadoNoLogin.value)
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
 
                   } else mostrarToast(

@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.api.AppRetrofit
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
@@ -38,11 +40,15 @@ import com.example.teste_dynamox.src.repository.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TelaDeResultado(navController: NavController) {
+fun TelaDeResultado(navController: NavController, telaDeLoginViewModelResultados : TelaDeLoginViewModel) {
     var podeReiniciarOQuiz by remember { mutableStateOf(false) }
     var podeMostrarHistorico by remember { mutableStateOf(false) }
+    val idUserLogado = telaDeLoginViewModelResultados.userNameLogado.collectAsState().value.id
+
+
     val repository = Repository(
         AppDatabase.getDatabase(LocalContext.current).userDao(),
         AppDatabase.getDatabase(LocalContext.current).jogosDao(),
@@ -155,7 +161,7 @@ fun TelaDeResultado(navController: NavController) {
         Button(
             onClick = {
                 inserirJogoPeloUserIdEReiniciarOQuiz(
-                    userId = idUsuarioLogado,
+                    userId = idUserLogado,
                     quantDeAcertos = contadorRespostasCertas,
                     quantDeErros = Math.abs(contadorRespostasCertas - 10)
                 )
@@ -186,7 +192,7 @@ fun TelaDeResultado(navController: NavController) {
         Button(
             onClick = {
                 inserirJogoPeloUserIdEMostrarHistorico(
-                    userId = idUsuarioLogado,
+                    userId = idUserLogado,
                     quantDeAcertos = contadorRespostasCertas,
                     quantDeErros = Math.abs(contadorRespostasCertas - 10)
                 )
@@ -219,5 +225,5 @@ fun TelaDeResultado(navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaDeResultadoPreview() {
-    TelaDeResultado(navController = NavController(LocalContext.current))
+    TelaDeResultado(navController = NavController(LocalContext.current), koinViewModel())
 }
