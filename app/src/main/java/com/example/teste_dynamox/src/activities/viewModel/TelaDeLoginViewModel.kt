@@ -6,19 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.teste_dynamox.src.activities.telas.optionss
 import com.example.teste_dynamox.src.activities.telas.statementt
+import com.example.teste_dynamox.src.api.QuizModel
 import com.example.teste_dynamox.src.databaseLocal.Users
 import com.example.teste_dynamox.src.repository.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.net.SocketTimeoutException
 
 private const val TAG = "TelaDeQuestões"
 
-class TelaDeLoginViewModel ( val repository: Repository ) : ViewModel() {
+class TelaDeLoginViewModel(
+   val repository: Repository,
+   //   private val context: Context,
+) : ViewModel() {
    private val _listaDeUsernames = MutableLiveData<List<String>>()
    val listaDeUsernames = _listaDeUsernames
 
@@ -41,26 +48,36 @@ class TelaDeLoginViewModel ( val repository: Repository ) : ViewModel() {
       CoroutineScope(Dispatchers.IO).launch {
          try {
             //buscando dados das perguntas na API
-            val respostaRequisicao = async { repository.getPerguntaRepository() }
-            val response = respostaRequisicao.await()      //Aguardando a conclusão da requisição
+            val call = repository.getPerguntaRepository()
+            call.enqueue(object : Callback<QuizModel> {
+               override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
+                  if (response.isSuccessful) {
+                     //withContext(Dispatchers.Main) {
+                     val quizResponse = response.body()
+                     statementt = quizResponse?.statement
+                     optionss = quizResponse?.options
+                     _id.value = quizResponse?.id
 
-            Log.i("TAG", "response é:   $response  ")
-            if (response.isSuccessful) {
-               withContext(Dispatchers.Main) {
-                  val quizResponse = response.body()
-                  statementt = quizResponse?.statement
-                  optionss = quizResponse?.options
-                  _id.value = quizResponse?.id
-
-                  navController.navigate("tela_de_questoes/$statementt")
+                     navController.navigate("tela_de_questoes/$statementt")
+                     //  }
+                  } else {
+                     Log.i(TAG, "onResponse:  A requisição Falhou!")
+                  }
                }
 
-            } else {
-               println("A requisição falhou!")
-            }
+               override fun onFailure(call: Call<QuizModel>, t: Throwable) {
+                  if (t is SocketTimeoutException) {
+                     Log.i(TAG, "O PROBLEMA ESTÁ NO CONTEXT DO TOAST")
+                  } else {
+                     println("O erro encontrado foi: $t")
+                  }
+               }
+
+            })
+
 
          } catch (e: Exception) {
-            println("O erro encontrado foi: $e")
+            Log.i(TAG, "fazerRequisicaoENavegarParaProximaTela:  Erro encontrado é : $e")
          }
       }
    }
@@ -91,5 +108,4 @@ class TelaDeLoginViewModel ( val repository: Repository ) : ViewModel() {
    fun atualizaUserNameDigitado(novoUserName: String) {
       _userNameDigitado.value = novoUserName
    }
-
 }

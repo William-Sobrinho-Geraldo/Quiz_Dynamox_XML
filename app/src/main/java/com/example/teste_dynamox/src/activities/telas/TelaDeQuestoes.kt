@@ -107,15 +107,15 @@ fun TelaDeQuestoes(
       CoroutineScope(Dispatchers.IO).launch {
          try {
             val response = repository.getPerguntaRepository()
-            if (response.isSuccessful) {
-               withContext(Dispatchers.Main) {
-                  val quizResponse = response.body()
-                  statementt = quizResponse?.statement
-                  optionss = quizResponse?.options
-                  telaDeLoginViewModel.atualizaIdDaPergunta(quizResponse?.id)
-                  //idDaPerguntaQuestoes = quizResponse?.id
-               }
-            }
+//            if (response.isSuccessful) {
+//               withContext(Dispatchers.Main) {
+//                  val quizResponse = response.body()
+//                  statementt = quizResponse?.statement
+//                  optionss = quizResponse?.options
+//                  telaDeLoginViewModel.atualizaIdDaPergunta(quizResponse?.id)
+//                  //idDaPerguntaQuestoes = quizResponse?.id
+//               }
+//            }
          } catch (e: Exception) {
             println("O erro foi $e")
          }

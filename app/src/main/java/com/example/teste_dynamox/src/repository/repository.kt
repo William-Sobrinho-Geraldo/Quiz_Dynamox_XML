@@ -24,7 +24,7 @@ class Repository(
         return usersDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
     }
 
-    suspend fun getPerguntaRepository(): Response<QuizModel> {
+    suspend fun getPerguntaRepository(): Call<QuizModel> {
         return servicesApi.getPergunta()
     }
 

@@ -12,6 +12,7 @@ import org.koin.dsl.module
 
 val mainModule = module {
 
+
    single { AppDatabase.getDatabase(androidContext()).userDao() }
    single { AppDatabase.getDatabase(androidContext()).jogosDao() }
    single { AppRetrofit.ServicesApi }
@@ -22,6 +23,4 @@ val mainModule = module {
       TelaDeCadastroDeUsuarioViewModel(repository = get())
       TelaDeLoginViewModel(repository = get())
    }
-
-
 }

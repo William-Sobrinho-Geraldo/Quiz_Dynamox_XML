@@ -9,7 +9,7 @@ import retrofit2.http.Url
 
 interface ServicesApi {
     @GET(BASE_URL)
-    suspend fun getPergunta(): Response<QuizModel>
+    suspend fun getPergunta(): Call<QuizModel>
 
     @POST
     fun checkAnswer(@Url url: String?, @Body answerRequest: AnswerRequest): Call<ServerResponse>
