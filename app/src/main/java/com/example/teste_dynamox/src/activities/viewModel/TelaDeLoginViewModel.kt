@@ -31,12 +31,18 @@ class TelaDeLoginViewModel(
 
    //VARIÁVEIS DAS PERGUNTAS
    private val _statement = MutableLiveData<String>(null)
-   val statement = _statement.value
-   private val _id = MutableLiveData("pica")
+   val statement = _statement
+   private val _id = MutableLiveData("default")
    val id = _id
    private val _options = MutableLiveData<List<String>>(mutableListOf("", "1"))
-   val options = _options.value
+   val options = _options
 
+
+   private val _ocorreuErro = MutableLiveData(false)
+   val ocorreuErro = _ocorreuErro
+
+   private val _timeOut = MutableLiveData(false)
+   val timeOut = _timeOut
 
    private val _userNameDigitado = MutableStateFlow("")  //INTERNO
    val userNameDigitado = _userNameDigitado.asStateFlow()
@@ -44,29 +50,31 @@ class TelaDeLoginViewModel(
    private val _usuarioLogado = MutableStateFlow<Users>(Users(userName = ""))     //INTERNO
    val userNameLogado = _usuarioLogado.asStateFlow()
 
-   fun fazerRequisicaoENavegarParaProximaTela(navController: NavController) {
-      try {
-         //buscando dados das perguntas na API
+   fun fazerRequisicaoENavegarParaProximaTela (navController: NavController) {
+      try {  //buscar dados das perguntas na API
          val call = repository.getPerguntaRepository()
+
          call.enqueue(object : Callback<QuizModel> {
             override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
-               if (response.isSuccessful) {
-                  CoroutineScope(Dispatchers.Main).launch {
+               if (response.isSuccessful) {   //Atualiza as variáveis das perguntas
+
                      val quizResponse = response.body()
                      statementt = quizResponse?.statement
                      optionss = quizResponse?.options
                      _id.value = quizResponse?.id
 
-                     navController.navigate("tela_de_questoes/$statementt")
-                  }
-
-               } else {
+                     navController.navigate("tela_de_questoes/$statementt")   //Traca de tela
+               } else {     //mostra erro
                   Log.i(TAG, "onResponse:  A requisição Falhou!")
                }
             }
 
             override fun onFailure(call: Call<QuizModel>, t: Throwable) {
+               _ocorreuErro.value = true
+
+
                if (t is SocketTimeoutException) {
+                  _timeOut.value = true
                   Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu")
                } else {
                   println("onFailure foi chamado:   O erro encontrado foi: $t")

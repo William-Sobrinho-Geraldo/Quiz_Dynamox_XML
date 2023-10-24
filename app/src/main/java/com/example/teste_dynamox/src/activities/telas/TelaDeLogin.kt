@@ -42,6 +42,8 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
+   val ocorreuErro = telaDeLoginViewModel.ocorreuErro.value
+   val timeOutline = telaDeLoginViewModel.timeOut.value
 
    telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
 
@@ -123,10 +125,22 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                      telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela(navController)
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
 
-                  } else mostrarToast(
-                     "Usuário ${userNameDigitadoNoLogin.value} não cadastrado",
-                     context = context
-                  )
+                  } else if (ocorreuErro == true) {
+                     mostrarToast(
+                        "Erro inesperado",
+                        context = context
+                     )
+                  } else if (timeOutline == true) {
+                     mostrarToast(
+                        "Dificuldades de comunicação com servidor",
+                        context = context
+                     )
+                  } else {
+                     mostrarToast(
+                        "Usuário ${userNameDigitadoNoLogin.value} não cadastrado",
+                        context = context
+                     )
+                  }
                }
             },
             contentPadding = PaddingValues(16.dp),
