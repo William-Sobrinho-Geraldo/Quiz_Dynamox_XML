@@ -12,6 +12,7 @@ import com.example.teste_dynamox.src.databaseLocal.jogosDosUsuaios
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -24,7 +25,7 @@ class Repository(
         return usersDao.buscaIdPeloUserName(userNameDigitadoPeloUsuario)
     }
 
-    suspend fun getPerguntaRepository(): Call<QuizModel> {
+    fun getPerguntaRepository(): Call<QuizModel> {
         return servicesApi.getPergunta()
     }
 

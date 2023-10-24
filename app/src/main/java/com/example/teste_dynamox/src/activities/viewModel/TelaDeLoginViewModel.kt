@@ -45,40 +45,38 @@ class TelaDeLoginViewModel(
    val userNameLogado = _usuarioLogado.asStateFlow()
 
    fun fazerRequisicaoENavegarParaProximaTela(navController: NavController) {
-      CoroutineScope(Dispatchers.IO).launch {
-         try {
-            //buscando dados das perguntas na API
-            val call = repository.getPerguntaRepository()
-            call.enqueue(object : Callback<QuizModel> {
-               override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
-                  if (response.isSuccessful) {
-                     //withContext(Dispatchers.Main) {
+      try {
+         //buscando dados das perguntas na API
+         val call = repository.getPerguntaRepository()
+         call.enqueue(object : Callback<QuizModel> {
+            override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
+               if (response.isSuccessful) {
+                  CoroutineScope(Dispatchers.Main).launch {
                      val quizResponse = response.body()
                      statementt = quizResponse?.statement
                      optionss = quizResponse?.options
                      _id.value = quizResponse?.id
 
                      navController.navigate("tela_de_questoes/$statementt")
-                     //  }
-                  } else {
-                     Log.i(TAG, "onResponse:  A requisição Falhou!")
                   }
+
+               } else {
+                  Log.i(TAG, "onResponse:  A requisição Falhou!")
                }
+            }
 
-               override fun onFailure(call: Call<QuizModel>, t: Throwable) {
-                  if (t is SocketTimeoutException) {
-                     Log.i(TAG, "O PROBLEMA ESTÁ NO CONTEXT DO TOAST")
-                  } else {
-                     println("O erro encontrado foi: $t")
-                  }
+            override fun onFailure(call: Call<QuizModel>, t: Throwable) {
+               if (t is SocketTimeoutException) {
+                  Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu")
+               } else {
+                  println("onFailure foi chamado:   O erro encontrado foi: $t")
                }
+            }
 
-            })
+         })
 
-
-         } catch (e: Exception) {
-            Log.i(TAG, "fazerRequisicaoENavegarParaProximaTela:  Erro encontrado é : $e")
-         }
+      } catch (e: Exception) {
+         Log.i(TAG, "caiu no catch: fazerRequisicaoENavegarParaProximaTela:  Erro encontrado é : $e")
       }
    }
 
