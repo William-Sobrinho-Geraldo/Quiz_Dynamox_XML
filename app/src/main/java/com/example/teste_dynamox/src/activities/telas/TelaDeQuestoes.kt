@@ -44,6 +44,7 @@ import com.example.teste_dynamox.R
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.AppRetrofit
+import com.example.teste_dynamox.src.api.QuizModel
 import com.example.teste_dynamox.src.api.ServerResponse
 import com.example.teste_dynamox.src.databaseLocal.AppDatabase
 import com.example.teste_dynamox.src.repository.Repository
@@ -53,7 +54,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import org.koin.androidx.compose.koinViewModel
@@ -106,18 +106,25 @@ fun TelaDeQuestoes(
    fun atualizarPagina() {
       CoroutineScope(Dispatchers.IO).launch {
          try {
-            val response = repository.getPerguntaRepository()
-//            if (response.isSuccessful) {
-//               withContext(Dispatchers.Main) {
-//                  val quizResponse = response.body()
-//                  statementt = quizResponse?.statement
-//                  optionss = quizResponse?.options
-//                  telaDeLoginViewModel.atualizaIdDaPergunta(quizResponse?.id)
-//                  //idDaPerguntaQuestoes = quizResponse?.id
-//               }
-//            }
+            val call = repository.getPerguntaRepository()
+            call.enqueue(object : Callback<QuizModel> {
+               override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
+                  if (response.isSuccessful) {
+                     val quizResponse = response.body()
+                     statementt = quizResponse?.statement
+                     optionss = quizResponse?.options
+                     telaDeLoginViewModel.atualizaIdDaPergunta(quizResponse?.id)
+                  } else {
+                     Log.i(TAG, "onResponse:  A requisição Falhou!")
+                  }
+               }
+
+               override fun onFailure(call: Call<QuizModel>, t: Throwable) {
+                  Log.i(TAG, "Caímos no onFailure da tela de questões:  e o Erro é $t  ")
+               }
+            })
          } catch (e: Exception) {
-            println("O erro foi $e")
+            Log.i(TAG, "Caímos no catch da tela de questõesO erro foi $e: ")
          }
          requisicaoCompleta = true
       }
