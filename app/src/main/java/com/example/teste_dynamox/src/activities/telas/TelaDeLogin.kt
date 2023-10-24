@@ -34,7 +34,7 @@ private const val TAG = "TelaDeLogin"
 
 var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
-var idd: String? = ""
+//var idd: String? = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

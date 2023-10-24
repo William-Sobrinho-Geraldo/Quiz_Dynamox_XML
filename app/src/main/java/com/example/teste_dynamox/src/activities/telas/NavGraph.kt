@@ -34,7 +34,7 @@ fun SetupNavGraph(
          TelaDeQuestoes(
             navController = navController,
             context = LocalContext.current,
-            telaDeLoginViewModel = koinViewModel()
+            koinViewModel()
          )
       }
       composable(route = "tela_de_resultado") {
