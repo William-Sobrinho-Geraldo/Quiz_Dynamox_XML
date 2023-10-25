@@ -43,9 +43,20 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
    val ocorreuErro = telaDeLoginViewModel.ocorreuErro.value
-   val timeOutline = telaDeLoginViewModel.timeOut.value
+   val timeOut = telaDeLoginViewModel.timeOut.value
 
    telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
+
+   LaunchedEffect(timeOut, ocorreuErro) {
+      if (timeOut == true) mostrarToast(
+         "Dificuldades de comunicação com servidor",
+         context = context
+      )
+      if (ocorreuErro == true) mostrarToast(
+         "Erro inesperado",
+         context = context
+      )
+   }
 
 
    // CONSTRUINDO A TELA DE LOGIN
@@ -124,17 +135,6 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
                      telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela(navController)
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
-
-                  } else if (ocorreuErro == true) {
-                     mostrarToast(
-                        "Erro inesperado",
-                        context = context
-                     )
-                  } else if (timeOutline == true) {
-                     mostrarToast(
-                        "Dificuldades de comunicação com servidor",
-                        context = context
-                     )
                   } else {
                      mostrarToast(
                         "Usuário ${userNameDigitadoNoLogin.value} não cadastrado",

@@ -75,7 +75,7 @@ class TelaDeLoginViewModel(
 
                if (t is SocketTimeoutException) {
                   _timeOut.value = true
-                  Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu")
+                  Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu e _timeOut vale : ${_timeOut.value}")
                } else {
                   println("onFailure foi chamado:   O erro encontrado foi: $t")
                }
