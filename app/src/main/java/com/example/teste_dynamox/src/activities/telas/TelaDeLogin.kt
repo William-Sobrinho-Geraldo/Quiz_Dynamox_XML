@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
@@ -36,26 +37,41 @@ var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 //var idd: String? = ""
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaDeLogin(navController: NavController, context: Context) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
-   val ocorreuErro = telaDeLoginViewModel.ocorreuErro.value
-   val timeOut = telaDeLoginViewModel.timeOut.value
+   val ocorreuErro = telaDeLoginViewModel.ocorreuErro
+   val timeOut = telaDeLoginViewModel.timeOut
+   val navegarParaTelaDeQuestoes = telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsState().value
+   val lifecycleOwner = LocalView.current.findViewTreeLifecycleOwner()
+
+   //OBSERVANDO ERROS DE COMUNICAÇÃO COM API
+   lifecycleOwner?.let {
+      timeOut.observe(it) { timeOut ->
+         if (timeOut) mostrarToast(
+            "Dificuldades de comunicação com servidor",
+            context = context
+         )
+      }
+
+      ocorreuErro.observe(it) { ocorreuErro ->
+         if (ocorreuErro) mostrarToast(
+            "Erro inesperado",
+            context = context
+         )
+      }
+   }  //lifecycleOwner
+
 
    telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
 
-   LaunchedEffect(timeOut, ocorreuErro) {
-      if (timeOut == true) mostrarToast(
-         "Dificuldades de comunicação com servidor",
-         context = context
-      )
-      if (ocorreuErro == true) mostrarToast(
-         "Erro inesperado",
-         context = context
-      )
+
+   LaunchedEffect(navegarParaTelaDeQuestoes) {
+      if (navegarParaTelaDeQuestoes) navController.navigate("tela_de_questoes/$statementt")
    }
 
 
@@ -133,7 +149,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                      "TelaDeLogin:  ListaDeUserNamesNoBancoDeDados é   $listaDeUserNamesNoBancoDeDados"
                   )
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
-                     telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela(navController)
+                     telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela()
                      telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
                   } else {
                      mostrarToast(

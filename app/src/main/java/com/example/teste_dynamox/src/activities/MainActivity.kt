@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.src.activities.telas.SetupNavGraph
 import com.example.teste_dynamox.src.activities.telas.TelaDeLogin
@@ -28,7 +29,6 @@ class MainActivity : ComponentActivity() {
       setContent {
          Teste_DYNAMOXTheme {
             SetupNavGraph(navController = rememberNavController())
-
          }
       }
    }

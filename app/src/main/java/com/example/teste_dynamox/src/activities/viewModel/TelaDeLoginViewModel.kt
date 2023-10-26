@@ -38,49 +38,50 @@ class TelaDeLoginViewModel(
    val options = _options
 
 
+   // VARIÁVEIS DA    fun fazerRequisicaoENavegarParaProximaTela ()
+   private val _navegarParaTelaDeQuestoes = MutableStateFlow(false)
+   val navegarParaTelaDeQuestoes = _navegarParaTelaDeQuestoes
    private val _ocorreuErro = MutableLiveData(false)
    val ocorreuErro = _ocorreuErro
-
    private val _timeOut = MutableLiveData(false)
    val timeOut = _timeOut
 
-   private val _userNameDigitado = MutableStateFlow("")  //INTERNO
+   //VARIÁVEIS DE userName
+   private val _userNameDigitado = MutableStateFlow("")
    val userNameDigitado = _userNameDigitado.asStateFlow()
-
-   private val _usuarioLogado = MutableStateFlow<Users>(Users(userName = ""))     //INTERNO
+   private val _usuarioLogado = MutableStateFlow<Users>(Users(userName = ""))
    val userNameLogado = _usuarioLogado.asStateFlow()
 
-   fun fazerRequisicaoENavegarParaProximaTela (navController: NavController) {
-      try {  //buscar dados das perguntas na API
+   fun fazerRequisicaoENavegarParaProximaTela() {
+      try {    //buscar dados das perguntas na API
          val call = repository.getPerguntaRepository()
 
          call.enqueue(object : Callback<QuizModel> {
             override fun onResponse(call: Call<QuizModel>, response: Response<QuizModel>) {
-               if (response.isSuccessful) {   //Atualiza as variáveis das perguntas
+               if (response.isSuccessful) {    //Atualiza as variáveis das perguntas
 
-                     val quizResponse = response.body()
-                     statementt = quizResponse?.statement
-                     optionss = quizResponse?.options
-                     _id.value = quizResponse?.id
-
-                     navController.navigate("tela_de_questoes/$statementt")   //Traca de tela
+                  val quizResponse = response.body()
+                  statementt = quizResponse?.statement
+                  optionss = quizResponse?.options
+                  _id.value = quizResponse?.id
+                  _navegarParaTelaDeQuestoes.value = true          //informa para a view Trocar de tela
+                  _timeOut.value = false
+                  _ocorreuErro.value = false
                } else {     //mostra erro
                   Log.i(TAG, "onResponse:  A requisição Falhou!")
                }
             }
 
             override fun onFailure(call: Call<QuizModel>, t: Throwable) {
-               _ocorreuErro.value = true
-
+               _ocorreuErro.value = true                                    //informa para a view que ocorreu um erro
+               _navegarParaTelaDeQuestoes.value = false
 
                if (t is SocketTimeoutException) {
-                  _timeOut.value = true
+                  _timeOut.value = true                                        //informa para a view que tivemos timeOutException
+                  _navegarParaTelaDeQuestoes.value = false
                   Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu e _timeOut vale : ${_timeOut.value}")
-               } else {
-                  println("onFailure foi chamado:   O erro encontrado foi: $t")
                }
             }
-
          })
 
       } catch (e: Exception) {
