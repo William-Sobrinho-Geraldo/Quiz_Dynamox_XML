@@ -29,6 +29,15 @@ class TelaDeLoginViewModel(
    private val _listaDeUsernames = MutableLiveData<List<String>>()
    val listaDeUsernames = _listaDeUsernames
 
+   // VARIÁVEIS DA    fun fazerRequisicaoENavegarParaProximaTela ()
+   private val _navegarParaTelaDeQuestoes = MutableStateFlow(false)
+   val navegarParaTelaDeQuestoes = _navegarParaTelaDeQuestoes
+   private val _ocorreuErro = MutableLiveData(false)
+   val ocorreuErro = _ocorreuErro
+   private val _timeOut = MutableLiveData(false)
+   val timeOut = _timeOut
+
+
    //VARIÁVEIS DAS PERGUNTAS
    private val _statement = MutableLiveData<String>(null)
    val statement = _statement
@@ -37,14 +46,6 @@ class TelaDeLoginViewModel(
    private val _options = MutableLiveData<List<String>>(mutableListOf("", "1"))
    val options = _options
 
-
-   // VARIÁVEIS DA    fun fazerRequisicaoENavegarParaProximaTela ()
-   private val _navegarParaTelaDeQuestoes = MutableStateFlow(false)
-   val navegarParaTelaDeQuestoes = _navegarParaTelaDeQuestoes
-   private val _ocorreuErro = MutableLiveData(false)
-   val ocorreuErro = _ocorreuErro
-   private val _timeOut = MutableLiveData(false)
-   val timeOut = _timeOut
 
    //VARIÁVEIS DE userName
    private val _userNameDigitado = MutableStateFlow("")
@@ -73,13 +74,16 @@ class TelaDeLoginViewModel(
             }
 
             override fun onFailure(call: Call<QuizModel>, t: Throwable) {
-               _ocorreuErro.value = true                                    //informa para a view que ocorreu um erro
                _navegarParaTelaDeQuestoes.value = false
 
                if (t is SocketTimeoutException) {
-                  _timeOut.value = true                                        //informa para a view que tivemos timeOutException
+                  _timeOut.value =
+                     true                                        //informa para a view que tivemos timeOutException
                   _navegarParaTelaDeQuestoes.value = false
                   Log.i(TAG, "SOCKETTIMEOUTEXCEPTION aconteceu e _timeOut vale : ${_timeOut.value}")
+               } else {
+                  _ocorreuErro.value = true                      //informa para a view que ocorreu um erro
+                  Log.i(TAG, "ERRO GENÉRICO  aconteceu e _ocorreuErro vale : ${_ocorreuErro.value}")
                }
             }
          })

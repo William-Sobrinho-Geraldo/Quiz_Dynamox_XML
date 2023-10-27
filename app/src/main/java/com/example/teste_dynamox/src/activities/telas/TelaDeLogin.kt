@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -44,31 +46,26 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
-   val ocorreuErro = telaDeLoginViewModel.ocorreuErro
-   val timeOut = telaDeLoginViewModel.timeOut
-   val navegarParaTelaDeQuestoes = telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsState().value
-   val lifecycleOwner = LocalView.current.findViewTreeLifecycleOwner()
+   val ocorreuErro = telaDeLoginViewModel.ocorreuErro.observeAsState().value
+   val erroTimeOut = telaDeLoginViewModel.timeOut.observeAsState().value
+   val navegarParaTelaDeQuestoes = telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsStateWithLifecycle().value
 
-   //OBSERVANDO ERROS DE COMUNICAÇÃO COM API
-   lifecycleOwner?.let {
-      timeOut.observe(it) { timeOut ->
-         if (timeOut) mostrarToast(
-            "Dificuldades de comunicação com servidor",
-            context = context
-         )
-      }
 
-      ocorreuErro.observe(it) { ocorreuErro ->
-         if (ocorreuErro) mostrarToast(
-            "Erro inesperado",
-            context = context
-         )
-      }
-   }  //lifecycleOwner
+   erroTimeOut?.let {
+      if (erroTimeOut) mostrarToast(
+         "Dificuldades de comunicação com servidor",
+         context = context
+      )
+   }
 
+   ocorreuErro?.let {
+      if (ocorreuErro) mostrarToast(
+         "Erro inesperado",
+         context = context
+      )
+   }
 
    telaDeLoginViewModel.buscaListaDeUserNames()    //POPULANDO A LISTA DE USERNAMES
-
 
    LaunchedEffect(navegarParaTelaDeQuestoes) {
       if (navegarParaTelaDeQuestoes) navController.navigate("tela_de_questoes/$statementt")
