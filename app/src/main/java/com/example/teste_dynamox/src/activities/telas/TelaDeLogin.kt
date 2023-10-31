@@ -24,31 +24,96 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.R
+import com.example.teste_dynamox.src.activities.MainActivity
+import com.example.teste_dynamox.src.activities.MainActivityProvider
 import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
 import com.example.teste_dynamox.src.util.mostrarToast
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "TelaDeLogin"
+private lateinit var callbackManager: CallbackManager
+private lateinit var auth: FirebaseAuth
+
 
 var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 //var idd: String? = ""
 
+override fun onActivityResult(requestCode: Int, ){}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaDeLogin(navController: NavController, context: Context) {
+fun TelaDeLogin(
+   navController: NavController,
+   context: Context,
+   MainActivityProvider: MainActivityProvider,
+) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
    val ocorreuErro = telaDeLoginViewModel.ocorreuErro.observeAsState().value
    val erroTimeOut = telaDeLoginViewModel.timeOut.observeAsState().value
-   val navegarParaTelaDeQuestoes = telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsStateWithLifecycle().value
+   val navegarParaTelaDeQuestoes =
+      telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsStateWithLifecycle().value
+
+
+   fun loginButton() {
+      callbackManager = CallbackManager.Factory.create()
+      val accessToken = AccessToken.getCurrentAccessToken()
+      if (accessToken != null && !accessToken.isExpired) {
+         navController.navigate("tela_de_login")
+      }
+
+      LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+         override fun onCancel() {
+            TODO("Not yet implemented")
+         }
+
+         override fun onError(error: FacebookException) {
+            TODO("Not yet implemented")
+         }
+
+         override fun onSuccess(result: LoginResult) {
+            navController.navigate("tela_de_questoes/$statementt")
+
+         }
+      })
+
+
+      LoginManager.getInstance()
+         .logInWithReadPermissions(MainActivityProvider.getMainActivity(), listOf("public_profile", "email"))
+
+
+
+      val permissions = listOf("email", "public_profile")
+
+      val loginButton = LoginButton(context)
+      //      loginButton.setPermissions(permissions)
+
+
+      auth = Firebase.auth
+
+      //      // Renderizar o botão no seu Composable
+      //      AndroidView(viewBlock = { loginButton })
+   }
+
 
 
    erroTimeOut?.let {
@@ -89,6 +154,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
       horizontalAlignment = Alignment.CenterHorizontally,
 
       ) {
+      val larguraDosCampos = 0.80f
+      val alturaDosCampos = 50.dp
+      val shape = RoundedCornerShape(10.dp)
+
       item {
          Text(
             "Quiz Dynamox",
@@ -126,6 +195,7 @@ fun TelaDeLogin(navController: NavController, context: Context) {
             ),
             modifier = Modifier
                .padding(bottom = 16.dp)
+               .fillMaxWidth(larguraDosCampos)
                .border(
                   width = 2.dp, shape = RoundedCornerShape(5.dp), brush = Brush.linearGradient(
                      colors = listOf(
@@ -156,11 +226,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
                   }
                }
             },
-            contentPadding = PaddingValues(16.dp),
             modifier = Modifier
-               .padding(horizontal = 26.dp)
-               .fillMaxWidth()
-               .clip(MaterialTheme.shapes.extraLarge)
+               .fillMaxWidth(larguraDosCampos)
+               .height(alturaDosCampos)
+               .clip(shape)
                .background(
                   Brush.horizontalGradient(
                      colors = listOf(
@@ -190,6 +259,42 @@ fun TelaDeLogin(navController: NavController, context: Context) {
 
          Spacer(modifier = Modifier.width(24.dp))
 
+         Text(
+            text = "OR",
+            fontSize = 24.sp,
+            modifier = Modifier
+               .padding(vertical = 8.dp),
+            color = Color.White
+         )
+
+         Button(
+            onClick = { loginButton() },
+            modifier = Modifier
+               .fillMaxWidth(larguraDosCampos)
+               .height(alturaDosCampos)
+               .clip(shape)
+               .background(
+                  Color(0xFF1877F2)
+               ),
+            colors = ButtonDefaults.buttonColors(
+               containerColor = Color.Transparent
+            )
+
+         ) {
+            Icon(
+               painter = painterResource(id = R.drawable.ic_fb_white), // Substitua pelo ID do ícone do Facebook
+               contentDescription = "Login com o Facebook",
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+               maxLines = 1,
+               text = stringResource(R.string.continue_with_facebook),
+               color = Color.White,
+               style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            )
+         }
+
+
          Row(
             Modifier
                .fillMaxWidth()
@@ -211,9 +316,10 @@ fun TelaDeLogin(navController: NavController, context: Context) {
    }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun TelaDeLoginPreviewConposable() {
-   val navController = rememberNavController()
-   TelaDeLogin(navController = navController, context = LocalContext.current)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun TelaDeLoginPreviewConposable() {
+//   CompositionLocalProvider(LocalContext provides LocalContext.current) {
+//      TelaDeLogin(rememberNavController(), LocalContext.current,  MainActivityProvider )
+//   }
+//}

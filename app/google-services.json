@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "195785176626",
+    "project_id": "quiz-dynamox",
+    "storage_bucket": "quiz-dynamox.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195785176626:android:923e51d0e49403ea052e2b",
+        "android_client_info": {
+          "package_name": "com.example.teste_dynamox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYW7gmgQ5OyODTudIX0E4msn6FpzwgBGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

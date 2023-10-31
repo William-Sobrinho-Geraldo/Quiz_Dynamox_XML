@@ -1,29 +1,28 @@
 package com.example.teste_dynamox.src.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.example.teste_dynamox.src.activities.telas.SetupNavGraph
 import com.example.teste_dynamox.src.activities.telas.TelaDeLogin
-import com.example.teste_dynamox.src.activities.viewModel.CompartilhamentoViewModels
-import com.example.teste_dynamox.src.activities.viewModel.TelaDeCadastroDeUsuarioViewModel
-import com.example.teste_dynamox.src.activities.viewModel.TelaDeLoginViewModel
-import com.example.teste_dynamox.src.api.AppRetrofit
-import com.example.teste_dynamox.src.databaseLocal.AppDatabase
-import com.example.teste_dynamox.src.repository.Repository
 import com.example.teste_dynamox.ui.theme.Teste_DYNAMOXTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import com.facebook.CallbackManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
-class MainActivity : ComponentActivity() {
+private lateinit var auth: FirebaseAuth
+private lateinit var callbackManager: CallbackManager
+
+class MainActivity : ComponentActivity(), MainActivityProvider {
    override fun onCreate(savedInstanceState: Bundle?) {
-
+      callbackManager = CallbackManager.Factory.create()
+      auth = Firebase.auth
 
       super.onCreate(savedInstanceState)
       setContent {
@@ -32,6 +31,17 @@ class MainActivity : ComponentActivity() {
          }
       }
    }
+
+
+   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+      callbackManager.onActivityResult(requestCode,resultCode,data)
+
+      super.onActivityResult(requestCode, resultCode, data)
+   }
+
+   override fun getMainActivity(): MainActivity {
+      return this
+   }
 }
 
 @Preview(showBackground = true)
@@ -39,6 +49,9 @@ class MainActivity : ComponentActivity() {
 fun AppPreview() {
    Teste_DYNAMOXTheme {
       val navController = rememberNavController()
-      TelaDeLogin(navController = navController, context = LocalContext.current)
+      TelaDeLogin(
+         navController = navController,
+         context = LocalContext.current,
+      )
    }
 }

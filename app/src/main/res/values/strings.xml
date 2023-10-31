@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Teste_DYNAMOX</string>
+
+    <string name="facebook_app_id">3505148719758998</string>
+    <string name="fb_login_protocol_scheme">fb3505148719758998</string>
+    <string name="facebook_client_token">56789</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+
+
 </resources>
