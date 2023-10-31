@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camada com o gradiente vertical -->
+    <item>
+        <shape>
+            <gradient
+                android:angle="270"
+                android:centerColor="#44142D"
+                android:endColor="#181818"
+                android:startColor="#2C2C2C"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

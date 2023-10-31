@@ -54,8 +54,6 @@ var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 //var idd: String? = ""
 
-override fun onActivityResult(requestCode: Int, ){}
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +61,6 @@ override fun onActivityResult(requestCode: Int, ){}
 fun TelaDeLogin(
    navController: NavController,
    context: Context,
-   MainActivityProvider: MainActivityProvider,
 ) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
    val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
@@ -97,8 +94,6 @@ fun TelaDeLogin(
       })
 
 
-      LoginManager.getInstance()
-         .logInWithReadPermissions(MainActivityProvider.getMainActivity(), listOf("public_profile", "email"))
 
 
 

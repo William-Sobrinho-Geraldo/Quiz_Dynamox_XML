@@ -44,14 +44,14 @@ class MainActivity : ComponentActivity(), MainActivityProvider {
    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AppPreview() {
-   Teste_DYNAMOXTheme {
-      val navController = rememberNavController()
-      TelaDeLogin(
-         navController = navController,
-         context = LocalContext.current,
-      )
-   }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AppPreview() {
+//   Teste_DYNAMOXTheme {
+//      val navController = rememberNavController()
+//      TelaDeLogin(
+//         navController = navController,
+//         context = LocalContext.current,
+//      )
+//   }
+//}

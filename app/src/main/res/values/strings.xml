@@ -5,6 +5,14 @@
     <string name="fb_login_protocol_scheme">fb3505148719758998</string>
     <string name="facebook_client_token">56789</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="quiz_dynamox">Quiz Dynamox</string>
+    <string name="digite_seu_login_aqui">Digite seu login aqui</string>
+    <string name="entrar">Entrar</string>
+    <string name="ou">Ou</string>
+    <string name="entrar_com_google">Entrar com Google</string>
+    <string name="entrar_com_facebook">Entrar com Facebook</string>
+    <string name="ainda_nao_tem_cadastro">Ainda não tem cadastro?</string>
+    <string name="cadastreSe">Cadastre-se</string>
 
 
 </resources>

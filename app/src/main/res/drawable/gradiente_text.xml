@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?><!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <gradient-->
+<!--        android:angle="0"-->
+<!--        android:centerColor="#CC481A"-->
+<!--        android:endColor="#76110C"-->
+<!--        android:startColor="#FF5722"-->
+<!--        android:type="linear" />-->
+<!--    <corners android:radius="8dp" />-->
+<!--</shape>-->
+
+<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <item>-->
+<!--        <shape>-->
+<!--            <solid android:color="@android:color/transparent" />-->
+<!--            <stroke-->
+<!--                android:width="2dp"-->
+<!--                android:angle="0"-->
+<!--                android:centerColor="#CC481A"-->
+<!--                android:endColor="#4CAF50"-->
+<!--                android:startColor="#FF5722" />-->
+<!--            <corners android:radius="8dp" />-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--</layer-list>-->
+
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"    >-->
+
+<!--    <stroke-->
+<!--        android:width="8dp"-->
+<!--        android:color="@drawable/grad" />-->
+<!--&lt;!&ndash;    <gradient&ndash;&gt;-->
+<!--&lt;!&ndash;        android:startColor="#FF5722"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:centerColor="#CC481A"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:endColor="#76110C"&ndash;&gt;-->
+<!--&lt;!&ndash;        />&ndash;&gt;-->
+<!--    <corners android:radius="16dp" />-->
+<!--</shape>-->
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Forma externa com gradiente -->
+    <item>
+        <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="3dp"
+                android:color="#FF5722"/>
+            <gradient
+                android:startColor="#FF5722"
+                android:centerColor="#CC481A"
+                android:endColor="#76110C"
+                />
+
+
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <!-- Forma interna com a cor de fundo (ou transparente) -->
+    <item android:left="8dp" android:right="8dp" android:top="8dp" android:bottom="8dp">
+        <shape>
+            <solid android:color="@android:color/transparent" /> <!-- Pode ser transparente ou a cor de fundo desejada -->
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+</layer-list>
+

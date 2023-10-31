@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textSize_Buttons">16sp</dimen>
+    <dimen name="rounded_corner_buttons">10dp</dimen>
+    <dimen name="rounded_corner_imageView">7dp</dimen>
+    <dimen name="rounded_corner_imageView_google">10dp</dimen>
+</resources>

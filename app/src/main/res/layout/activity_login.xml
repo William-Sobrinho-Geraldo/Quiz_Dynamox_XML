@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradiente_do_fundo"
+    tools:context=".src.activities.activitiesXML.LoginActivity">
+
+    <!--    <ScrollView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/teal_200"-->
+    <!--        tools:layout_editor_absoluteY="366dp">-->
+
+    <TextView
+        android:id="@+id/titulo_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/quiz_dynamox"
+        android:textColor="@color/white"
+        android:textSize="47sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/login_TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/gradiente_text"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titulo_app"
+        app:layout_constraintWidth_percent="0.7">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:background="@color/transparente"
+            android:hint="@string/digite_seu_login_aqui"
+            android:textColorHint="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_entrar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rouded_button_entrar"
+        android:elevation="4dp"
+        android:text="@string/entrar"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_Buttons"
+        app:layout_constraintEnd_toEndOf="@+id/login_TextInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/login_TextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/login_TextInputLayout" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/ou"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_entrar" />
+
+    <Button
+        android:id="@+id/btn_facebook"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_button_facebook"
+        android:elevation="4dp"
+        android:paddingStart="36dp"
+        android:text="@string/entrar_com_facebook"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_Buttons"
+
+        app:layout_constraintEnd_toEndOf="@+id/login_TextInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/login_TextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        app:cardCornerRadius="@dimen/rounded_corner_imageView"
+
+        app:layout_constraintBottom_toBottomOf="@+id/btn_facebook"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@+id/btn_facebook"
+        app:layout_constraintTop_toTopOf="@+id/btn_facebook">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_image_view"
+            android:elevation="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icone_fb_fundo_branco" />
+    </androidx.cardview.widget.CardView>
+
+
+    <Button
+        android:id="@+id/btn_google"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_button_google"
+
+        android:elevation="4dp"
+        android:paddingStart="36dp"
+        android:text="@string/entrar_com_google"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_Buttons"
+        app:layout_constraintEnd_toEndOf="@+id/login_TextInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/login_TextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/btn_facebook" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        app:cardCornerRadius="@dimen/rounded_corner_imageView"
+
+        app:layout_constraintBottom_toBottomOf="@+id/btn_google"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@+id/btn_google"
+        app:layout_constraintTop_toTopOf="@+id/btn_google">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_image_view"
+            android:elevation="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_google" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/nao_tem_cadastro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/ainda_nao_tem_cadastro"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_google" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/cadastreSe"
+        android:textColor="@color/com_facebook_blue"
+        android:textSize="16sp"
+
+        app:layout_constraintStart_toEndOf="@id/nao_tem_cadastro"
+        app:layout_constraintTop_toBottomOf="@+id/btn_google" />
+
+
+    <!--    </ScrollView>-->
+</androidx.constraintlayout.widget.ConstraintLayout>
