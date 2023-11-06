@@ -1,5 +1,6 @@
 package com.example.teste_dynamox.src.repository
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.teste_dynamox.src.api.AnswerRequest
 import com.example.teste_dynamox.src.api.QuizModel
@@ -15,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+private const val TAG = "repository"
 class Repository(
     val usersDao: UsersDao,
     val jogosDao: JogosDao,
@@ -30,6 +31,8 @@ class Repository(
     }
 
     suspend fun buscaTodosUsuariosRepository(): List<Users> {
+
+        Log.i(TAG, "buscaTodosUsuariosRepository foi chamada e os usuários são ${usersDao.buscaTodosUsuarios()} ")
         return usersDao.buscaTodosUsuarios()
     }
 

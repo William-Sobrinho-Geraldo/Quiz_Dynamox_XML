@@ -13,14 +13,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Teste_DYNAMOX"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
             android:name=".src.activities.activitiesXML.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".src.activities.HomeActivity"
-            android:exported="false" /> <!-- <activity -->
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
         <!-- android:name="com.facebook.FacebookActivity" -->
         <!-- android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" -->
         <!-- android:label="@string/app_name" /> -->
@@ -46,11 +51,6 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Teste_DYNAMOX">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

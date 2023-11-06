@@ -20,13 +20,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.SocketTimeoutException
 
-private const val TAG = "TelaDeQuestões"
+private const val TAG = "TelaDeLoginViewModel"
 
 class TelaDeLoginViewModel(
    val repository: Repository,
    //   private val context: Context,
 ) : ViewModel() {
-   private val _listaDeUsernames = MutableLiveData<List<String>>()
+   private val _listaDeUsernames = MutableLiveData<List<String>>(emptyList())
    val listaDeUsernames = _listaDeUsernames
 
    // VARIÁVEIS DA    fun fazerRequisicaoENavegarParaProximaTela ()
@@ -48,8 +48,8 @@ class TelaDeLoginViewModel(
 
 
    //VARIÁVEIS DE userName
-   private val _userNameDigitado = MutableStateFlow("")
-   val userNameDigitado = _userNameDigitado.asStateFlow()
+   private val _userNameDigitado = MutableLiveData("")
+   val userNameDigitado = _userNameDigitado
    private val _usuarioLogado = MutableStateFlow<Users>(Users(userName = ""))
    val userNameLogado = _usuarioLogado.asStateFlow()
 
@@ -98,10 +98,21 @@ class TelaDeLoginViewModel(
    }
 
    fun buscaListaDeUserNames() {
+      Log.i(TAG, "buscaListaDeUserNames: VIEWMODEL a lista de userNames é ${_listaDeUsernames.value}")
+
+
       CoroutineScope(Dispatchers.IO).launch {
          val usuarios = repository.buscaTodosUsuariosRepository()
-         withContext(Dispatchers.Main) { _listaDeUsernames.value = usuarios.map { users -> users.userName } }
+         withContext(Dispatchers.Main) {
+            _listaDeUsernames.value = usuarios.map { users -> users.userName }
+            Log.i(TAG, "buscaListaDeUserNames: VIEWMODEL a lista de usuários é $usuarios")
+            Log.i(TAG, "buscaListaDeUserNames: VIEWMODEL _listaDeUsernames é ${_listaDeUsernames.value}")
+         }
       }
+      Log.i(
+         TAG,
+         "buscaListaDeUserNames: VIEWMODEL DEPOIS DE CHAMAR O REPOSITORY  a lista de userNames é ${_listaDeUsernames.value}"
+      )
    }
 
    fun buscaUsuarioLogadoPeloUserName(userNameLogado: String) {

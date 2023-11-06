@@ -33,23 +33,28 @@
         android:layout_height="56dp"
         android:layout_marginTop="60dp"
         android:background="@drawable/gradiente_text"
-        android:textColor="@color/white"
+        app:counterEnabled="false"
+        app:helperText=""
+        app:hintTextColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titulo_app"
         app:layout_constraintWidth_percent="0.7">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/login_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
+            android:autofillHints=""
             android:background="@color/transparente"
             android:hint="@string/digite_seu_login_aqui"
-            android:textColorHint="@color/white" />
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="#FFFFFFFF" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_entrar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -76,7 +81,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_entrar" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_facebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -90,7 +95,8 @@
 
         app:layout_constraintEnd_toEndOf="@+id/login_TextInputLayout"
         app:layout_constraintStart_toStartOf="@+id/login_TextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="RtlSymmetry" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -115,7 +121,7 @@
     </androidx.cardview.widget.CardView>
 
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_google"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -129,7 +135,8 @@
         android:textSize="@dimen/textSize_Buttons"
         app:layout_constraintEnd_toEndOf="@+id/login_TextInputLayout"
         app:layout_constraintStart_toStartOf="@+id/login_TextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/btn_facebook" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_facebook"
+        tools:ignore="RtlSymmetry" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -160,21 +167,22 @@
         android:layout_marginTop="8dp"
         android:text="@string/ainda_nao_tem_cadastro"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="14sp"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_google" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
         android:text="@string/cadastreSe"
         android:textColor="@color/com_facebook_blue"
-        android:textSize="16sp"
+        android:textSize="14sp"
+        android:textStyle="bold"
 
         app:layout_constraintStart_toEndOf="@id/nao_tem_cadastro"
         app:layout_constraintTop_toBottomOf="@+id/btn_google" />

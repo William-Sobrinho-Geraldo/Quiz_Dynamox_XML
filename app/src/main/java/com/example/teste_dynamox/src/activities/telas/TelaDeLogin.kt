@@ -49,12 +49,9 @@ private const val TAG = "TelaDeLogin"
 private lateinit var callbackManager: CallbackManager
 private lateinit var auth: FirebaseAuth
 
-
 var statementt: String? = null
 var optionss: MutableList<String>? = mutableListOf("", "1")
 //var idd: String? = ""
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,52 +60,12 @@ fun TelaDeLogin(
    context: Context,
 ) {
    val telaDeLoginViewModel = koinViewModel<TelaDeLoginViewModel>()
-   val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado.collectAsState()
+   val userNameDigitadoNoLogin = telaDeLoginViewModel.userNameDigitado
    val listaDeUserNamesNoBancoDeDados = telaDeLoginViewModel.listaDeUsernames.value
    val ocorreuErro = telaDeLoginViewModel.ocorreuErro.observeAsState().value
    val erroTimeOut = telaDeLoginViewModel.timeOut.observeAsState().value
    val navegarParaTelaDeQuestoes =
       telaDeLoginViewModel.navegarParaTelaDeQuestoes.collectAsStateWithLifecycle().value
-
-
-   fun loginButton() {
-      callbackManager = CallbackManager.Factory.create()
-      val accessToken = AccessToken.getCurrentAccessToken()
-      if (accessToken != null && !accessToken.isExpired) {
-         navController.navigate("tela_de_login")
-      }
-
-      LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-         override fun onCancel() {
-            TODO("Not yet implemented")
-         }
-
-         override fun onError(error: FacebookException) {
-            TODO("Not yet implemented")
-         }
-
-         override fun onSuccess(result: LoginResult) {
-            navController.navigate("tela_de_questoes/$statementt")
-
-         }
-      })
-
-
-
-
-
-      val permissions = listOf("email", "public_profile")
-
-      val loginButton = LoginButton(context)
-      //      loginButton.setPermissions(permissions)
-
-
-      auth = Firebase.auth
-
-      //      // Renderizar o botão no seu Composable
-      //      AndroidView(viewBlock = { loginButton })
-   }
-
 
 
    erroTimeOut?.let {
@@ -175,7 +132,7 @@ fun TelaDeLogin(
          OutlinedTextField(
             isError = true,
             textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-            value = userNameDigitadoNoLogin.value,
+            value = userNameDigitadoNoLogin.value!!,
             onValueChange = { novoUserName ->
                telaDeLoginViewModel.atualizaUserNameDigitado(novoUserName)
             },
@@ -212,7 +169,7 @@ fun TelaDeLogin(
                   )
                   if (listaDeUserNamesNoBancoDeDados.contains(userNameDigitadoNoLogin.value)) {
                      telaDeLoginViewModel.fazerRequisicaoENavegarParaProximaTela()
-                     telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value)
+                     telaDeLoginViewModel.buscaUsuarioLogadoPeloUserName(userNameDigitadoNoLogin.value!!)
                   } else {
                      mostrarToast(
                         "Usuário ${userNameDigitadoNoLogin.value} não cadastrado",
@@ -263,7 +220,7 @@ fun TelaDeLogin(
          )
 
          Button(
-            onClick = { loginButton() },
+            onClick = { },
             modifier = Modifier
                .fillMaxWidth(larguraDosCampos)
                .height(alturaDosCampos)
@@ -277,7 +234,7 @@ fun TelaDeLogin(
 
          ) {
             Icon(
-               painter = painterResource(id = R.drawable.ic_fb_white), // Substitua pelo ID do ícone do Facebook
+               painter = painterResource(id = R.drawable.icone_fb_fundo_branco), // Substitua pelo ID do ícone do Facebook
                contentDescription = "Login com o Facebook",
             )
             Spacer(modifier = Modifier.width(16.dp))

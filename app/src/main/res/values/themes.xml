@@ -2,4 +2,7 @@
 <resources>
 
     <style name="Theme.Teste_DYNAMOX" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    </style>
+
 </resources>

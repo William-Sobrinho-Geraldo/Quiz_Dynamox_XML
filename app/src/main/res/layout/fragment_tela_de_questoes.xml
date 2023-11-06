@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradiente_do_fundo"
+    android:padding="20dp"
+    tools:context=".src.activities.fragmentsXML.TelaDeQuestoesFragment">
+
+    <TextView
+        android:id="@+id/numero_statement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Número da pergunta "
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_statement"
+
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/statement"
+
+        />
+
+    <TextView
+        android:id="@+id/statement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/statement"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_statement"
+
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numero_statement" />
+
+    <TextView
+        android:id="@+id/options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/options"
+        android:textColor="@color/white"
+
+
+        android:textSize="@dimen/font_size_options"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+
+        app:layout_constraintTop_toBottomOf="@+id/statement" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_entrar"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+
+        android:background="@drawable/rouded_button_entrar"
+        android:elevation="4dp"
+        android:text="@string/proxima_pergunta"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_Buttons"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/options"
+        app:layout_constraintVertical_bias="0.85" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

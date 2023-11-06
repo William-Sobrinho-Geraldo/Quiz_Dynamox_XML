@@ -1,10 +1,13 @@
 package com.example.teste_dynamox.src.databaseLocal
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+
+private const val TAG = "UsersDao"
 
 @Dao
 interface UsersDao {
